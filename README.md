@@ -18,13 +18,6 @@
 
 ## 기술 스택
 
-| Python | Django |  HTML   |
+| Python | Django | HTML |
 | :--------: | :--------: | :------: |
-|   ![python]    |   ![django]    | ![html] |
-
-
-<!-- Stack Icon Refernces -->
-
-[Python]: /images/python.svg
-[Django]: /images/django.svg
-[HTML]: /images/html.svg
+| <img src="images/python.png" width="100" height="100"> | <img src="images/django.png" width="100" height="100"> | <img src="images/html.png" width="100" height="100"> |
