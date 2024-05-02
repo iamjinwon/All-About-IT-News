@@ -49,7 +49,9 @@ def crawl_techrecipe():
                     paragraph_texts_convert = " ".join(paragraph_texts)
 
                     image_src = images[index]['src']
-                    news_data.append({"title": news.text.strip(), "date": date.text, "image": image_src, "link": link, "description" : paragraph_texts_convert})
+                    seoul_tz = pytz.timezone('Asia/Seoul')
+                    today_date = datetime.now(tz = seoul_tz).strftime('%H:%M:%S')
+                    news_data.append({"title": news.text.strip(), "date": today_date, "image": image_src, "link": link, "description" : paragraph_texts_convert})
 
                 if page_end:
                     break

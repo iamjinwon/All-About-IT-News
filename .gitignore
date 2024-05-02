@@ -1,3 +1,5 @@
 pull_request_template.md
 .env
 .DS_Store
+views.cpython-311.pyc
+urls.cpython-311.pyc
