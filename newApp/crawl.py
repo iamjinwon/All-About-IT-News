@@ -50,7 +50,7 @@ def crawl_techrecipe():
 
                     image_src = images[index]['src']
                     seoul_tz = pytz.timezone('Asia/Seoul')
-                    today_date = datetime.now(tz = seoul_tz).strftime('%H:%M:%S')
+                    today_date = datetime.now(tz = seoul_tz).strftime('%H%M%S')
                     news_data.append({"title": news.text.strip(), "date": today_date, "image": image_src, "link": link, "description" : paragraph_texts_convert})
 
                 if page_end:

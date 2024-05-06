@@ -16,6 +16,7 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'css/styles3.css' %}" rel="stylesheet" />
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <!-- Navigation-->
@@ -60,11 +61,16 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                 {% for article in articles %}
                     <div class="col-md-10 col-lg-8 col-xl-7">
-                        <h2 class="section-heading">{{ article.title }}</h2><br>
+                        <h2 class="section-heading">{{ article.title }}</h2>
                         <a href="{{ article.link }}"><img class="post-image" src="{{ article.image }}" alt="..." /></a>
-                        <p>{{ article.description }}</p>
+                        <div class="article-summary">
+                            <p><i class="fas fa-check-circle"></i> {{ article.summary.first_sentence }}</p>
+                            <p><i class="fas fa-check-circle"></i> {{ article.summary.second_sentence }}</p>
+                            <p><i class="fas fa-check-circle"></i> {{ article.summary.third_sentence }}</p>
+                        </div>
                     </div>
                 {% endfor %}
+        
             </div>
         </article>
         <!-- Footer-->

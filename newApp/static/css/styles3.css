@@ -10803,4 +10803,19 @@ header.masthead .post-heading .meta a {
     object-fit: cover; /* Ensures the image covers the set dimensions without distortion */
 }
 
+.article-summary {
+  margin: 20px 0;
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.article-summary i {
+  margin-right: 10px;
+  color: #4CAF50; /* Green color for icons */
+}
+
+.article-summary p {
+  margin-bottom: 12px; /* Add space between sentences */
+}
+
 }
