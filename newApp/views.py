@@ -2,19 +2,19 @@ from django.shortcuts import render, HttpResponse
 from datetime import datetime
 import json
 import os
+import re
 
 def index(request):
-    directory_path = "/Users/jinwon/Desktop/git_Study/newApp/media/news/TechRecipe"
+    directory_path = "/Users/jinwon/Desktop/git_Study/newApp/media/news/tech_recipe"
     items = os.listdir(directory_path)
     formatted_articles = []
 
     for item in items:
-        if os.path.isfile(os.path.join(directory_path, item)) and item.endswith('.json'):
-            date_part = item.split(':')[1].split('.')[0]
-            formatted_date = datetime.strptime(date_part, '%Y%m%d').strftime('%Y년 %-m월 %-d일 기사모음')
+        if os.path.isfile(os.path.join(directory_path, item)) and re.match(r'^\d{8}\.json$', item):
+            formatted_date = datetime.strptime(item.split('.')[0], '%Y%m%d').strftime('%Y년 %-m월 %-d일 기사모음')
             formatted_articles.append(formatted_date)
 
-    return render(request, "newApp/index2.html", {"articles": formatted_articles})
+    return render(request, "newApp/index.html", {"articles": formatted_articles})
 
 def about(request):
     return render(request, "newApp/about.html")
@@ -24,9 +24,9 @@ def contact(request):
 
 def post(request):
     # 원본 기사 파일 경로
-    original_json_path = "/Users/jinwon/Desktop/git_Study/newApp/media/news/TechRecipe/tech_recipe:20240417.json"
+    original_json_path = "/Users/jinwon/Desktop/git_Study/newApp/media/news/tech_recipe/20240511.json"
     # 요약 기사 파일 경로
-    summarized_json_path = "/Users/jinwon/Desktop/git_Study/newApp/media/news/TechRecipe/summarize_tech_recipe:20240417.json"
+    summarized_json_path = "/Users/jinwon/Desktop/git_Study/newApp/media/news/tech_recipe/summarize_20240511.json"
     
     # 원본 기사 데이터 로드
     with open(original_json_path, 'r') as file:
