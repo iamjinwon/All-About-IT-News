@@ -2,22 +2,21 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import json
-import time
 import pytz
 
-def crawl_techrecipe():
-    def parse_time(time_str):
-        if '분' in time_str:
-            return 0
-        elif '시간' in time_str:
-            return int(time_str.split(' ')[0])
-        else:
-            return 24
+def parse_time(time_str):
+    if '분' in time_str:
+        return 0
+    elif '시간' in time_str:
+        return int(time_str.split(' ')[0])
+    else:
+        return 24
 
+def crawling():
     news_data = []
     max_retries = 2
-
     page = 1
+
     while True:
         attempt = 0
         while attempt < max_retries:
@@ -35,7 +34,7 @@ def crawl_techrecipe():
                 times = [parse_time(date.text.strip()) for date in newsbox_date]
                 page_end = False
 
-                for index, (news, time, date, link) in enumerate(zip(newsbox, times, newsbox_date, newslink)):
+                for index, (news, time, link) in enumerate(zip(newsbox, times, newslink)):
                     if time >= 12:
                         page_end = True
                         break
@@ -55,7 +54,7 @@ def crawl_techrecipe():
 
                 if page_end:
                     break
-
+                
                 page += 1
                 break 
 
@@ -71,8 +70,5 @@ def crawl_techrecipe():
     seoul_tz = pytz.timezone('Asia/Seoul')
     today_date = datetime.now(tz = seoul_tz).strftime('%Y%m%d')
 
-    with open(f'media/news/TechRecipe/tech_recipe:{today_date}.json', 'w', encoding='utf-8') as file:
+    with open(f'media/news/tech_recipe/{today_date}.json', 'w', encoding='utf-8') as file:
         json.dump(news_data, file, ensure_ascii=False, indent=4)
-
-if __name__ == "__main__":
-    crawl_techrecipe()

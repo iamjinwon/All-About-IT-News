@@ -1,11 +1,13 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+import pytz
+import datetime
 import json
 
 load_dotenv()
 
-def get_descriptions_from_json(filename):
+def get_descriptions(filename):
     try:
         with open(filename, 'r') as file:
             data = json.load(file)
@@ -15,7 +17,7 @@ def get_descriptions_from_json(filename):
         print(f"File '{filename}' not found.")
         return []
 
-def make_output(system_prompt, news_content):
+def summarize_gpt(system_prompt, news_content):
     client = OpenAI(
         api_key=os.getenv("OPENAI_API_KEY")
     )
@@ -32,48 +34,51 @@ def make_output(system_prompt, news_content):
     result = response.choices[0].message.content
     return result
 
+
+
 def activate_gpt():
     system_prompt = """
-    You're a great news summarization bot: summarize a given news story in 3 sentences.
+        You're a great news summarization bot: summarize a given news story in 3 sentences.
 
-    [Rules]
-    - Answers MUST always be in Korean.
-    - You must THINK about the summarization process STEP BY STEP.
-    - You MUST only answer in 3 sentences.
-    - Answers MUST not be duplicated.
-    - Your answers MUST follow the [Output Format].
+        [Rules]
+        - Answers MUST always be in Korean.
+        - You must THINK about the summarization process STEP BY STEP.
+        - You MUST only answer in 3 sentences.
+        - Answers MUST not be duplicated.
+        - Your answers MUST follow the [Output Format].
 
-    [Output Format]
-    (1)
-    (2)
-    (3)
+        [Output Format]
+        (1)
+        (2)
+        (3)
 
-    """.strip()
+        """.strip()
+    seoul_tz = pytz.timezone('Asia/Seoul')
+    today_date = datetime.datetime.now(tz=seoul_tz).strftime('%Y%m%d')
+    
+    directory_path = "/Users/jinwon/Desktop/git_Study/newApp/media/news/tech_recipe"
+    filename = f"{today_date}.json"
+    file_path = os.path.join(directory_path, filename)
 
-    directory_path = "/Users/jinwon/Desktop/git_Study/newApp/media/news/TechRecipe"
-    items = os.listdir(directory_path)
-
-    for item in items:
-        date = item.split('.')[0]  # 파일명에서 날짜 추출
-        summarize_filename = f"summarize_{date}.json"
+    if os.path.exists(file_path):
+        descriptions = get_descriptions(file_path)
         summaries = []
 
-        descriptions = get_descriptions_from_json(os.path.join(directory_path, item))
         for index, news in enumerate(descriptions, start=1):
-            summarize = make_output(system_prompt, news)
-            # 문장 번호와 개행 문자 제거하고, JSON 딕셔너리 형태로 변환
+            summarize = summarize_gpt(system_prompt, news)
             summary_lines = summarize.strip().split('\n')
             summary_dict = {
                 "first_sentence": summary_lines[0].strip().lstrip('(1) '),
                 "second_sentence": summary_lines[1].strip().lstrip('(2) '),
-                "third_sentence": summary_lines[2].strip().lstrip('(3) ')
+                "third_comment": summary_lines[2].strip().lstrip('(3) ')
             }
             summaries.append(summary_dict)
 
-        # JSON 파일로 저장
-        save_path = os.path.join(directory_path, summarize_filename)
+        save_path = os.path.join(directory_path, f"summarize_{today_date}.json")
         with open(save_path, 'w') as json_file:
             json.dump(summaries, json_file, indent=4, ensure_ascii=False)
+    else:
+        print(f"No file found for today's date: {today_date}")
 
 if __name__ == "__main__":
     activate_gpt()
