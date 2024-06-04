@@ -1,74 +1,99 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
-import json
+from datetime import datetime, timedelta
 import pytz
+import time
+import django
+import os
+import sys
+
+# 현재 작업 디렉토리를 프로젝트 루트 디렉토리로 설정
+current_path = os.path.dirname(os.path.abspath(__file__))
+project_path = os.path.join(current_path, '..')
+sys.path.append(project_path)
+os.chdir(project_path)
+
+# Django settings 설정
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newProject.settings')
+django.setup()
+
+from newApp.models import News
+
+SEOUL_TZ = pytz.timezone('Asia/Seoul')
+MAX_RETRIES = 2
+PAGE_LIMIT_HOURS = 12
 
 def parse_time(time_str):
+    now = datetime.now(tz=SEOUL_TZ)
     if '분' in time_str:
-        return 0
+        minutes = int(time_str.split(' ')[0])
+        return now - timedelta(minutes=minutes)
     elif '시간' in time_str:
-        return int(time_str.split(' ')[0])
+        hours = int(time_str.split(' ')[0])
+        return now - timedelta(hours=hours)
     else:
-        return 24
+        return now - timedelta(days=1)
+
+def fetch_page(url):
+    attempt = 0
+    while attempt < MAX_RETRIES:
+        try:
+            res = requests.get(url)
+            res.raise_for_status()
+            return BeautifulSoup(res.text, "lxml")
+        except requests.exceptions.RequestException as e:
+            attempt += 1
+            time.sleep(60)  # 1분 대기
+            if attempt == MAX_RETRIES:
+                raise Exception(f"Failed to fetch data after {MAX_RETRIES} attempts for URL: {url}") from e
+
+def is_page_end(time):
+    return (datetime.now(tz=SEOUL_TZ) - time).total_seconds() >= PAGE_LIMIT_HOURS * 3600
 
 def crawling():
-    news_data = []
-    max_retries = 2
     page = 1
 
     while True:
-        attempt = 0
-        while attempt < max_retries:
-            try:
-                url = f"https://techrecipe.co.kr/category/news/page/{page}"
-                res = requests.get(url)
-                res.raise_for_status()
-                soup = BeautifulSoup(res.text, "lxml")
+        url = f"https://techrecipe.co.kr/category/news/page/{page}"
+        soup = fetch_page(url)
 
-                newsbox = soup.find_all('h2', attrs={"class": "entry-title h3"})
-                newslink = [item.find('a')['href'] for item in newsbox]
-                newsbox_date = soup.find_all('span', attrs={"class": "updated"})
-                images = soup.find_all('img', attrs={"class": "attachment-gridlove-a4-orig size-gridlove-a4-orig wp-post-image"})
+        newsbox = soup.find_all('h2', attrs={"class": "entry-title h3"})
+        newslink = [item.find('a')['href'] for item in newsbox]
+        newsbox_date = soup.find_all('span', attrs={"class": "updated"})
+        images = soup.find_all('img', attrs={"class": "attachment-gridlove-a4-orig size-gridlove-a4-orig wp-post-image"})
 
-                times = [parse_time(date.text.strip()) for date in newsbox_date]
-                page_end = False
+        times = [parse_time(date.text.strip()) for date in newsbox_date]
+        page_end = False
 
-                for index, (news, time, link) in enumerate(zip(newsbox, times, newslink)):
-                    if time >= 12:
-                        page_end = True
-                        break
-                    url2 = f"{link}"
-                    res2 = requests.get(url2)
-                    res2.raise_for_status()
-                    soup2 = BeautifulSoup(res2.text, "lxml")
+        for index, (news, time, link) in enumerate(zip(newsbox, times, newslink)):
+            if is_page_end(time):
+                page_end = True
+                break
+            if "위클리" in news.text:
+                continue 
+            
+            soup2 = fetch_page(link)
 
-                    description_div = soup2.find('div', class_ = 'entry-content')
-                    paragraph_texts = [p.text for p in description_div.find_all('p')]
-                    paragraph_texts_convert = " ".join(paragraph_texts)
+            description_div = soup2.find('div', class_ = 'entry-content')
+            paragraph_texts = [p.text for p in description_div.find_all('p')]
+            paragraph_texts_convert = " ".join(paragraph_texts)
 
-                    image_src = images[index]['src']
-                    seoul_tz = pytz.timezone('Asia/Seoul')
-                    today_date = datetime.now(tz = seoul_tz).strftime('%H%M%S')
-                    news_data.append({"title": news.text.strip(), "date": today_date, "image": image_src, "link": link, "description" : paragraph_texts_convert})
+            image_src = images[index]['src']
 
-                if page_end:
-                    break
-                
-                page += 1
-                break 
+            # 데이터베이스에 저장
+            News.objects.create(
+                title=news.text.strip(),
+                date=time,
+                image=image_src,
+                link=link,
+                description=paragraph_texts_convert
+            )
 
-            except requests.exceptions.RequestException as e:
-                attempt += 1
-                time.sleep(60)  # 1분 대기
-                if attempt == max_retries:
-                    raise Exception(f"Failed to fetch data after {max_retries} attempts for page {page}") from e
-
-        if page_end or attempt == max_retries:
+        if page_end:
             break
+        
+        page += 1
 
-    seoul_tz = pytz.timezone('Asia/Seoul')
-    today_date = datetime.now(tz = seoul_tz).strftime('%Y%m%d')
-
-    with open(f'media/news/tech_recipe/{today_date}.json', 'w', encoding='utf-8') as file:
-        json.dump(news_data, file, ensure_ascii=False, indent=4)
+# 실행 예제
+if __name__ == "__main__":
+    crawling()

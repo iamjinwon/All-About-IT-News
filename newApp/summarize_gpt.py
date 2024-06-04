@@ -1,21 +1,24 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+import django
+import sys
+from datetime import datetime, time
 import pytz
-import datetime
-import json
 
-load_dotenv()
+current_path = os.path.dirname(os.path.abspath(__file__))
+project_path = os.path.join(current_path, '..')
+sys.path.append(project_path)
+os.chdir(project_path)
 
-def get_descriptions(filename):
-    try:
-        with open(filename, 'r') as file:
-            data = json.load(file)
-            descriptions = [item['description'] for item in data]
-            return descriptions
-    except FileNotFoundError:
-        print(f"File '{filename}' not found.")
-        return []
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newProject.settings')
+django.setup()
+
+from newApp.models import News, SummarizeNews
+
+# .env 파일 경로 명시
+dotenv_path = os.path.join(project_path, '.env')
+load_dotenv(dotenv_path=dotenv_path)
 
 def summarize_gpt(system_prompt, news_content):
     client = OpenAI(
@@ -23,7 +26,7 @@ def summarize_gpt(system_prompt, news_content):
     )
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
+        model="gpt-4",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": news_content},
@@ -34,9 +37,7 @@ def summarize_gpt(system_prompt, news_content):
     result = response.choices[0].message.content
     return result
 
-
-
-def activate_gpt():
+def summarize_articles():
     system_prompt = """
         You're a great news summarization bot: summarize a given news story in 3 sentences.
 
@@ -51,34 +52,43 @@ def activate_gpt():
         (1)
         (2)
         (3)
-
         """.strip()
+
     seoul_tz = pytz.timezone('Asia/Seoul')
-    today_date = datetime.datetime.now(tz=seoul_tz).strftime('%Y%m%d')
-    
-    directory_path = "/Users/jinwon/Desktop/git_Study/newApp/media/news/tech_recipe"
-    filename = f"{today_date}.json"
-    file_path = os.path.join(directory_path, filename)
+    today_start = datetime.combine(datetime.now(seoul_tz).date(), time.min).astimezone(seoul_tz)
+    today_end = datetime.combine(datetime.now(seoul_tz).date(), time.max).astimezone(seoul_tz)
 
-    if os.path.exists(file_path):
-        descriptions = get_descriptions(file_path)
-        summaries = []
+    # News 테이블에서 오늘 날짜의 news_id와 description을 가져오기
+    news_data = News.objects.filter(created_dt__range=(today_start, today_end))
 
-        for index, news in enumerate(descriptions, start=1):
-            summarize = summarize_gpt(system_prompt, news)
-            summary_lines = summarize.strip().split('\n')
-            summary_dict = {
-                "first_sentence": summary_lines[0].strip().lstrip('(1) '),
-                "second_sentence": summary_lines[1].strip().lstrip('(2) '),
-                "third_comment": summary_lines[2].strip().lstrip('(3) ')
-            }
-            summaries.append(summary_dict)
+    if not news_data.exists():
+        print("No news articles found for today's date.")
+        return
 
-        save_path = os.path.join(directory_path, f"summarize_{today_date}.json")
-        with open(save_path, 'w') as json_file:
-            json.dump(summaries, json_file, indent=4, ensure_ascii=False)
-    else:
-        print(f"No file found for today's date: {today_date}")
+    for news in news_data:
+        description = news.description
+        news_id = news.news_id
+
+        summarize = summarize_gpt(system_prompt, description)
+        summary_lines = summarize.strip().split('\n')
+        
+        summary_dict = {
+            "news_id": news_id,
+            "first_sentence": summary_lines[0].strip().lstrip('(1) '),
+            "second_sentence": summary_lines[1].strip().lstrip('(2) '),
+            "third_sentence": summary_lines[2].strip().lstrip('(3) '),
+            "created_dt": datetime.now(seoul_tz)  # 현재 로컬 시간 저장
+        }
+
+        # SummarizeNews 테이블에 news_id가 이미 있는지 확인하고, 업데이트 또는 생성
+        summarize_news_obj, created = SummarizeNews.objects.update_or_create(
+            news_id=news_id,
+            defaults=summary_dict
+        )
+        if created:
+            print(f"Created new summary for news_id {news_id}")
+        else:
+            print(f"Updated existing summary for news_id {news_id}")
 
 if __name__ == "__main__":
-    activate_gpt()
+    summarize_articles()
