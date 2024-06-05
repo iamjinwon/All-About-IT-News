@@ -26,7 +26,8 @@ class SummarizeNews(models.Model):
         db_table = 'Summarize_news'
 
 class User(models.Model):
-    user_id = models.IntegerField(primary_key=True)
+    user_id = models.AutoField(primary_key=True) 
+    user_name = models.CharField(max_length=45, null=True, blank=True) 
     email = models.CharField(max_length=45)
 
     class Meta:
