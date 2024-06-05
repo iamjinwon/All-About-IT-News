@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
-from django.conf import settings
 from datetime import datetime
-from django.db.models import F
 from newApp.models import News, SummarizeNews
+from .forms import UserForm
 
 def index(request):
     # 데이터베이스에서 뉴스 날짜 목록을 가져오기
@@ -21,7 +20,16 @@ def about(request):
     return render(request, "newApp/about.html")
 
 def contact(request):
-    return render(request, "newApp/contact.html")
+    success = False
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            success = True  # 폼이 성공적으로 제출되었음을 표시
+    else:
+        form = UserForm()
+    
+    return render(request, 'newApp/contact.html', {'form': form, 'success': success})
 
 def post(request, date_str):
     try:
