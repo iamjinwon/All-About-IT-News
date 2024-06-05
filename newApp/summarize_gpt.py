@@ -26,7 +26,7 @@ def summarize_gpt(system_prompt, news_content):
     )
 
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": news_content},
@@ -55,11 +55,11 @@ def summarize_articles():
         """.strip()
 
     seoul_tz = pytz.timezone('Asia/Seoul')
-    today_start = datetime.combine(datetime.now(seoul_tz).date(), time.min).astimezone(seoul_tz)
-    today_end = datetime.combine(datetime.now(seoul_tz).date(), time.max).astimezone(seoul_tz)
+    now = datetime.now(seoul_tz)
+    today_start = datetime.combine(now.date(), time.min).astimezone(seoul_tz)
+    today_end = datetime.combine(now.date(), time.max).astimezone(seoul_tz)
 
-    # News 테이블에서 오늘 날짜의 news_id와 description을 가져오기
-    news_data = News.objects.filter(created_dt__range=(today_start, today_end))
+    news_data = News.objects.filter(created_dt__range=(today_start, today_end), crucial=True)
 
     if not news_data.exists():
         print("No news articles found for today's date.")
@@ -70,25 +70,28 @@ def summarize_articles():
         news_id = news.news_id
 
         summarize = summarize_gpt(system_prompt, description)
-        summary_lines = summarize.strip().split('\n')
-        
-        summary_dict = {
-            "news_id": news_id,
-            "first_sentence": summary_lines[0].strip().lstrip('(1) '),
-            "second_sentence": summary_lines[1].strip().lstrip('(2) '),
-            "third_sentence": summary_lines[2].strip().lstrip('(3) '),
-            "created_dt": datetime.now(seoul_tz)  # 현재 로컬 시간 저장
-        }
+        if summarize:
+            summary_lines = summarize.strip().split('\n')
+            
+            if len(summary_lines) >= 3:
+                summary_dict = {
+                    "news_id": news_id,
+                    "first_sentence": summary_lines[0].strip().lstrip('(1) '),
+                    "second_sentence": summary_lines[1].strip().lstrip('(2) '),
+                    "third_sentence": summary_lines[2].strip().lstrip('(3) '),
+                    "created_dt": now  # 현재 로컬 시간 저장
+                }
 
-        # SummarizeNews 테이블에 news_id가 이미 있는지 확인하고, 업데이트 또는 생성
-        summarize_news_obj, created = SummarizeNews.objects.update_or_create(
-            news_id=news_id,
-            defaults=summary_dict
-        )
-        if created:
-            print(f"Created new summary for news_id {news_id}")
-        else:
-            print(f"Updated existing summary for news_id {news_id}")
+                _, created = SummarizeNews.objects.update_or_create(
+                    news_id=news_id,
+                    defaults=summary_dict
+                )
+                if created:
+                    print(f"Created new summary for news_id {news_id}")
+                else:
+                    print(f"Updated existing summary for news_id {news_id}")
+            else:
+                print(f"Summarization did not return enough sentences for news_id {news_id}")
 
 if __name__ == "__main__":
     summarize_articles()

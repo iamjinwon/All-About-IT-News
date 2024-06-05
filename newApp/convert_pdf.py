@@ -2,38 +2,48 @@ import pdfkit
 from django.conf import settings
 from django.template.loader import render_to_string
 import os
-import json
 from datetime import datetime
 from bs4 import BeautifulSoup
+from newApp.models import News, SummarizeNews
 
 def convert_to_pdf():
     try:
         today = datetime.now()
         date_formatted = today.strftime('%Y%m%d')
 
-        directory_path = os.path.join(settings.BASE_DIR, 'newApp', 'media', 'news', 'tech_recipe')
-        original_json_path = os.path.join(directory_path, f"{date_formatted}.json")
-        summarized_json_path = os.path.join(directory_path, f"summarize_{date_formatted}.json")
+        # 데이터베이스에서 해당 날짜의 주요 기사 5개 가져오기
+        original_articles = News.objects.filter(created_dt__date=today.date(), crucial=True)[:5]
+        summarized_articles = SummarizeNews.objects.filter(news_id__in=[article.news_id for article in original_articles])
 
-        if not os.path.exists(original_json_path):
-            print("Original JSON file not found.")
+        if not original_articles.exists():
+            print("No original articles found for today.")
             return
-        if not os.path.exists(summarized_json_path):
-            print("Summarized JSON file not found.")
+        if not summarized_articles.exists():
+            print("No summarized articles found for today.")
             return
-
-        with open(original_json_path, 'r') as file:
-            original_articles = json.load(file)
         
-        with open(summarized_json_path, 'r') as file:
-            summarized_articles = json.load(file)
-        
-        for i, article in enumerate(original_articles):
-            article['summary'] = summarized_articles[i]
-            article['crawled_date'] = date_formatted
+        summarized_dict = {summary.news_id: summary for summary in summarized_articles}
+        combined_articles = []
+        for article in original_articles:
+            summary = summarized_dict.get(article.news_id)
+            if summary:
+                combined_article = {
+                    'title': article.title,
+                    'date': article.date,
+                    'image': article.image,
+                    'link': article.link,
+                    'description': article.description,
+                    'summary': {
+                        'first_sentence': summary.first_sentence,
+                        'second_sentence': summary.second_sentence,
+                        'third_sentence': summary.third_sentence,
+                    },
+                    'crawled_date': date_formatted
+                }
+                combined_articles.append(combined_article)
 
         articles_html = []
-        for article in original_articles:
+        for article in combined_articles:
             article_html_content = render_to_string('newApp/post.html', {"articles": [article]})
             soup = BeautifulSoup(article_html_content, 'html.parser')
             main_content = soup.find(class_='main-content')
