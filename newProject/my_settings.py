@@ -14,4 +14,4 @@ DATABASES = {
     }
 }
 
-SECRET_KEY = 'django-insecure-gddb)2@+aik@5uq#wh*=1dh-zs*s*x+@x3m4(#s3n0o#p4&+-d'
+SECRET_KEY = ''
