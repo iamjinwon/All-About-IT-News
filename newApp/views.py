@@ -16,9 +16,6 @@ def index(request):
 
     return render(request, "newApp/index.html", {"articles": articles_with_display})
 
-def about(request):
-    return render(request, "newApp/about.html")
-
 def contact(request):
     success = False
     if request.method == 'POST':

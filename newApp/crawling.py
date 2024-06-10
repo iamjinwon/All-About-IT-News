@@ -18,7 +18,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newProject.settings')
 django.setup()
 
 from newApp.models import News
-
 SEOUL_TZ = pytz.timezone('Asia/Seoul')
 MAX_RETRIES = 2
 PAGE_LIMIT_HOURS = 12
