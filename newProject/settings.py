@@ -1,10 +1,7 @@
 from pathlib import Path
 import pdfkit
-
-try:
-    import newProject.my_settings as my_settings
-except ImportError as e:
-    raise ImportError("Could not import my_settings. Check if the file exists and the path is correct.") from e
+import newProject.my_settings as my_settings
+import newProject.my_email as my_email
 
 PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
@@ -22,8 +19,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'newApp',
-    'corsheaders'
+    'corsheaders',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -84,6 +85,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+# DJANGO_CELERY_BEAT_TZ_AWARE = False
+
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
@@ -91,3 +94,10 @@ STATICFILES_DIRS = [
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = my_email.EMAIL_BACKEND
+EMAIL_HOST = my_email.EMAIL_HOST
+EMAIL_PORT = my_email.EMAIL_PORT
+EMAIL_USE_TLS = my_email.EMAIL_USE_TLS
+EMAIL_HOST_USER = my_email.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = my_email.EMAIL_HOST_PASSWORD

@@ -3,17 +3,22 @@ from dotenv import load_dotenv
 import os
 import django
 import sys
-from datetime import datetime
-from newApp.models import News
+from datetime import datetime, time
+import pytz
 
+# 경로 설정
 current_path = os.path.dirname(os.path.abspath(__file__))
 project_path = os.path.join(current_path, '..')
 sys.path.append(project_path)
 os.chdir(project_path)
 
+# Django 설정
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newProject.settings')
 django.setup()
 
+from newApp.models import News
+
+# 환경 변수 로드
 dotenv_path = os.path.join(project_path, '.env')
 load_dotenv(dotenv_path=dotenv_path)
 
@@ -23,12 +28,12 @@ def make_output(system_prompt, content):
     )
 
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": content},
         ],
-        temperature=0.2
+        temperature=0.7
     )
 
     result = response.choices[0].message.content.strip()
@@ -37,19 +42,25 @@ def make_output(system_prompt, content):
 
 def update_crucial_articles():
     system_prompt = """
-    Your task is to find interesting articles by looking at the title of the article and focusing on IT-related information, the latest technology, social issues, etc.
+Your task is to find interesting articles by looking at the title of the article and focusing on IT-related information, the latest technology, social issues, etc.
 
-    [Rules]
-    - Answers MUST always be in Korean.
-    - You MUST pick 5 articles and answer them by article number.
-    - The given texts are 3-line summaries of the articles.
-    - The primary audience for this article is people in IT-related industries.
-    - You MUST answer only with the article number.
-    - Answers MUST not be duplicated.
-    """.strip()
+[Rules]
+- You MUST pick 5 articles and answer them by news_id.
+- The given texts are the titles of the articles
+- The primary audience for this article is people in IT-related industries.
+- Answers MUST not be duplicated.
+- You MUST draw 5 articles, or all of them if you have fewer.
+- You only need to call the news_id.
+- The response MUST follow the output format
 
-    today_start = datetime.combine(datetime.now().date(), datetime.min.time())
-    today_end = datetime.combine(datetime.now().date(), datetime.max.time())
+[Output format]
+1, 2, 3, 4, 5
+""".strip()
+
+    seoul_tz = pytz.timezone('Asia/Seoul')
+    now = datetime.now(seoul_tz)
+    today_start = datetime.combine(now.date(), time.min).astimezone(seoul_tz)
+    today_end = datetime.combine(now.date(), time.max).astimezone(seoul_tz)
 
     news_data = News.objects.filter(created_dt__range=(today_start, today_end)).values_list('news_id','title')
 
@@ -62,11 +73,9 @@ def update_crucial_articles():
     selected_news_ids_str, total_tokens = make_output(system_prompt, content)
 
     try:
-        # 문자열에서 news_id 추출
         selected_news_ids = [int(news_id.strip()) for news_id in selected_news_ids_str.split(',')]
     except ValueError as e:
         print(f"Error parsing selected news ids: {e}")
-        # 응답이 예상한 형식이 아닌 경우 디버깅을 위한 출력을 추가
         print(f"Response content was not in the expected format: {selected_news_ids_str}")
         return [], total_tokens
 
@@ -76,3 +85,4 @@ def update_crucial_articles():
 
 if __name__ == "__main__":
     selected_ids, total_tokens = update_crucial_articles()
+    print(f"Selected news IDs: {selected_ids}, Total tokens used: {total_tokens}")
