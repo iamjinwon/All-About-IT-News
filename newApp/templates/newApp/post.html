@@ -7,12 +7,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Clean Blog - Start Bootstrap Theme</title>
+    <title>All About IT News</title>
     <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .masthead {
+            padding: 20px 0;
+            text-align: center;
+        }
+        .masthead .post-heading h1 {
+            font-size: 2em;
+        }
+        .masthead .post-heading h2 {
+            font-size: 1.2em;
+        }
+        .summary-box {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .summary-box div {
+            margin: 10px 0;
+        }
+        .article-summary p {
+            margin: 10px 0;
+        }
+        .post-image {
+            width: 100%;
+            height: auto;
+            margin: 20px 0;
+        }
+        @media (min-width: 768px) {
+            .container {
+                max-width: 750px;
+            }
+        }
+        @media (min-width: 992px) {
+            .container {
+                max-width: 970px;
+            }
+        }
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1170px;
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .article-summary {
+                text-align: left;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="main-content" class="d-flex flex-column">
@@ -28,7 +87,7 @@
                     <ul class="navbar-nav ms-auto py-4 py-lg-0">
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'redirect_to_today_post' %}">홈</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'index' %}">뉴스 모음</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'contact' %}">이메일 등록</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'contact' %}">구독하기</a></li>
                     </ul>
                 </div>
             </div>
@@ -42,8 +101,7 @@
                             <h1>All About IT News</h1>
                             <h2 class="subheading">매일 새로운 뉴스를 3줄로 확인하세요!</h2>
                             <span class="meta">
-                                Posted by
-                                <a><b>All About IT News</b></a>
+                                Posted on <b>{{ display_date }}</b>
                             </span>
                         </div>
                     </div>
@@ -52,31 +110,46 @@
         </header>
         <!-- Post Content-->
         <div class="content flex-fill">
-            <!-- Sidebar -->
-            <div class="sidebar">
-                {% for article in articles %}
-                    <a href="#article-{{ forloop.counter }}">{{ article.title }}</a>
-                {% endfor %}
-            </div>
-            <div class="main-content">
-                <article class="mb-4">
-                    <div class="container px-4 px-lg-5">
-                        <div class="row gx-4 gx-lg-5 justify-content-center">
-                        {% for article in articles %}
-                            <div class="col-md-10 col-lg-8 col-xl-7" id="article-{{ forloop.counter }}">
-                                <h2 class="section-heading">{{ article.title }}</h2>
-                                <a><img class="post-image" src="{{ article.image }}" alt="..." /></a>
-                                <div class="article-link"><p>출처: <b><a href="{{ article.link }}" style="text-decoration: none; color: gray;">테크레시피</a></b></p></div>
-                                <div class="article-summary">
-                                    <p><i class="fas fa-check-circle"></i> {{ article.summary.first_sentence }}</p>
-                                    <p><i class="fas fa-check-circle"></i> {{ article.summary.second_sentence }}</p>
-                                    <p><i class="fas fa-check-circle"></i> {{ article.summary.third_sentence }}</p>
-                                </div>
-                            </div>
-                        {% endfor %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <!-- Sidebar -->
+                        <div class="sidebar">
+                            <h3>뉴스 제목</h3>
+                            <ul class="sidebar-list">
+                                {% for article in articles %}
+                                    <li><a href="#article-{{ forloop.counter }}">{{ article.title }}</a></li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
-                </article>
+                    <div class="col-lg-9">
+                        <h3 style="text-align: center;">오늘의 뉴스 한줄요약 </h3>
+                        <div class="summary-box">
+                            {% for article in articles %}
+                            <div><i class="fas fa-check-circle" style="color: green;"></i> {{ article.title }}</div>
+                            {% endfor %}
+                        </div>
+                        <article class="mb-4">
+                            <div class="container px-4 px-lg-5">
+                                <div class="row gx-4 gx-lg-5 justify-content-center">
+                                {% for article in articles %}
+                                    <div class="col-md-10 col-lg-8 col-xl-7" id="article-{{ forloop.counter }}">
+                                        <h2 class="section-heading">{{ article.title }}</h2>
+                                        <a><img class="post-image" src="{{ article.image }}" alt="..." /></a>
+                                        <div class="article-link"><p>출처: <b><a href="{{ article.link }}" style="text-decoration: none; color: gray;">테크레시피</a></b></p></div>
+                                        <div class="article-summary">
+                                            <p><i class="fas fa-check-circle"></i> {{ article.summary.first_sentence }}</p>
+                                            <p style="margin-top: 20px;"><i class="fas fa-check-circle"></i> {{ article.summary.second_sentence }}</p>
+                                            <p style="margin-top: 20px;"><i class="fas fa-check-circle"></i> {{ article.summary.third_sentence }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

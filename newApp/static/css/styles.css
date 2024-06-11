@@ -10803,23 +10803,14 @@ header.masthead .post-heading .meta a {
     object-fit: cover; /* Ensures the image covers the set dimensions without distortion */
 }
 
-.article-summary {
-  margin: 20px 0;
-  font-size: 1.1em;
-  line-height: 1.6;
-}
-
 .article-summary i {
   margin-right: 10px;
   color: #4CAF50; /* Green color for icons */
 }
 
-.article-summary p {
-  margin-bottom: 12px; /* Add space between sentences */
-}
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: #f8f9fa;
+  background-color: white;
 }
 .masthead {
   background-size: cover;
@@ -10842,16 +10833,7 @@ body {
   width: 100%;
   border-radius: 15px;
 }
-.article-summary {
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-.article-summary p {
-  margin: 10px 0;
-}
+
 .article-link {
   text-align: center;
   font-size: 0.7em;
@@ -10862,15 +10844,14 @@ body {
   top: 100px;
   height: 80vh;
   width: 200px;
-  background-color: #80c2d0;
   padding-top: 20px;
-  color: white;
+  color: black;
   overflow-y: auto;
   border-radius: 15px;
 }
 .sidebar a {
   display: block;
-  color: white;
+  color: black;
   padding: 10px;
   text-decoration: none;
   white-space: nowrap;
@@ -10906,4 +10887,69 @@ footer {
   padding: 20px 0; /* optional padding */
 }
 
+.sidebar {
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 6px;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-list li {
+  margin-bottom: 10px;
+}
+
+.sidebar-list li a {
+  text-decoration: none;
+  color: black;
+  font-style: italic;
+  font-family:monospace;
+  font-weight: 500;
+  font-size: 17px;
+}
+
+.summary-box {
+  background-color: #e9ecef;
+  border-radius: 5px;
+  margin: 20px 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.post-heading {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.post-heading h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.article-summary {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.article-summary p {
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  color: #212529;
+}
 }
