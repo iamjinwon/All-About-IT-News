@@ -55,8 +55,8 @@ def post(request, date_str):
                 }
                 combined_articles.append(combined_article)
 
-        # Render the template with articles
-        return render(request, "newApp/post.html", {"articles": combined_articles})
+        # Render the template with articles and display_date
+        return render(request, "newApp/post.html", {"articles": combined_articles, "display_date": display_date})
     
     except ValueError:
         # Handle exceptions for date parsing

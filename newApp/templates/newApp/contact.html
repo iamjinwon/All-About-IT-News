@@ -32,7 +32,7 @@
                     <ul class="navbar-nav ms-auto py-4 py-lg-0">
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'redirect_to_today_post' %}">홈</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'index' %}">뉴스 모음</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'contact' %}">이메일 등록</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'contact' %}">구독하기</a></li>
                     </ul>
                 </div>
             </div>
@@ -43,8 +43,8 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="page-heading">
-                            <h1>이메일 등록하기</h1>
-                            <span class="subheading">매일 IT 뉴스를 이메일로 받고싶나요? 여기서 등록하세요!</span>
+                            <h1>구독하기</h1>
+                            <span class="subheading">매일 IT 뉴스를 이메일로 받고싶나요? 여기서 구독하세요!</span>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                                 {% csrf_token %}
                                 {{ form|crispy }}
                                 <br />
-                                <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">Send</button>
+                                <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">구독하기</button>
                             </form>
                         </div>
                     </div>
