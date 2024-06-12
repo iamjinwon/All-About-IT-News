@@ -10675,7 +10675,6 @@ header.masthead {
   background: no-repeat center center;
   background-size: cover;
   background-attachment: scroll;
-  background-image: url("{/Users/jinwon/Desktop/git_Study/newApp/static/assets/img/home-bg.jpg}");
 }
 header.masthead:before {
   content: "";
@@ -10684,7 +10683,7 @@ header.masthead:before {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #80c2d0;
+  background-color: black;
   opacity: 0.5;
 }
 header.masthead .page-heading,
@@ -10839,7 +10838,7 @@ body {
   font-size: 0.7em;
   color: gray;
 }
-.sidebar {
+/* .sidebar {
   position: sticky;
   top: 100px;
   height: 80vh;
@@ -10860,7 +10859,7 @@ body {
 }
 .sidebar a:hover {
   background-color: #575d63;
-}
+} */
 .content {
   display: flex;
   margin: 20px;
@@ -10887,7 +10886,7 @@ footer {
   padding: 20px 0; /* optional padding */
 }
 
-.sidebar {
+/* .sidebar {
   background-color: #ffffff;
   border-radius: 5px;
   padding: 6px;
@@ -10917,7 +10916,7 @@ footer {
   font-family:monospace;
   font-weight: 500;
   font-size: 17px;
-}
+} */
 
 .summary-box {
   background-color: #e9ecef;

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, HttpResponse
+from django.core.exceptions import ValidationError
 from datetime import datetime
 from newApp.models import News, SummarizeNews
 from .forms import UserForm
@@ -18,15 +19,19 @@ def index(request):
 
 def contact(request):
     success = False
+    error_message = None
     if request.method == 'POST':
         form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            success = True  # 폼이 성공적으로 제출되었음을 표시
+        try:
+            if form.is_valid():
+                form.save()
+                success = True  # 폼이 성공적으로 제출되었음을 표시
+        except ValidationError as e:
+            error_message = e.message
     else:
         form = UserForm()
     
-    return render(request, 'newApp/contact.html', {'form': form, 'success': success})
+    return render(request, 'newApp/contact.html', {'form': form, 'success': success, 'error_message': error_message})
 
 def post(request, date_str):
     try:

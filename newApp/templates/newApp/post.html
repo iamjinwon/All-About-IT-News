@@ -23,16 +23,6 @@
             margin: 0 auto;
             padding: 0 15px;
         }
-        .masthead {
-            padding: 20px 0;
-            text-align: center;
-        }
-        .masthead .post-heading h1 {
-            font-size: 2em;
-        }
-        .masthead .post-heading h2 {
-            font-size: 1.2em;
-        }
         .summary-box {
             text-align: center;
             margin: 20px 0;
@@ -63,13 +53,10 @@
                 max-width: 1170px;
             }
         }
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-            .article-summary {
-                text-align: left;
-            }
+        .vertical-align {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     </style>
 </head>
@@ -93,63 +80,45 @@
             </div>
         </nav>
         <!-- Page Header-->
-        <header class="masthead">
+        <header class="masthead" style="background-image: url('{% static 'assets/img/post-sample-image.jpg' %}');">
             <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
-                        <div class="post-heading">
-                            <h1>All About IT News</h1>
-                            <h2 class="subheading">매일 새로운 뉴스를 3줄로 확인하세요!</h2>
-                            <span class="meta">
-                                Posted on <b>{{ display_date }}</b>
-                            </span>
+                        <div class="site-heading">
+                            <h1>{{ display_date }}</h1>
+                            <span class="subheading">다섯개의 뉴스를 한눈에 확인하세요!</span>
                         </div>
                     </div>
                 </div>
             </div>
         </header>
         <!-- Post Content-->
-        <div class="content flex-fill">
+        <div class="content flex-fill vertical-align">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <!-- Sidebar -->
-                        <div class="sidebar">
-                            <h3>뉴스 제목</h3>
-                            <ul class="sidebar-list">
-                                {% for article in articles %}
-                                    <li><a href="#article-{{ forloop.counter }}">{{ article.title }}</a></li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-9">
-                        <h3 style="text-align: center;">오늘의 뉴스 한줄요약 </h3>
-                        <div class="summary-box">
-                            {% for article in articles %}
-                            <div><i class="fas fa-check-circle" style="color: green;"></i> {{ article.title }}</div>
-                            {% endfor %}
-                        </div>
-                        <article class="mb-4">
-                            <div class="container px-4 px-lg-5">
-                                <div class="row gx-4 gx-lg-5 justify-content-center">
-                                {% for article in articles %}
-                                    <div class="col-md-10 col-lg-8 col-xl-7" id="article-{{ forloop.counter }}">
-                                        <h2 class="section-heading">{{ article.title }}</h2>
-                                        <a><img class="post-image" src="{{ article.image }}" alt="..." /></a>
-                                        <div class="article-link"><p>출처: <b><a href="{{ article.link }}" style="text-decoration: none; color: gray;">테크레시피</a></b></p></div>
-                                        <div class="article-summary">
-                                            <p><i class="fas fa-check-circle"></i> {{ article.summary.first_sentence }}</p>
-                                            <p style="margin-top: 20px;"><i class="fas fa-check-circle"></i> {{ article.summary.second_sentence }}</p>
-                                            <p style="margin-top: 20px;"><i class="fas fa-check-circle"></i> {{ article.summary.third_sentence }}</p>
-                                        </div>
-                                    </div>
-                                {% endfor %}
+                <div class="summary-box">
+                    <h3 style="text-align: center;">오늘의 뉴스 한줄요약 </h3>
+                    {% for article in articles %}
+                    <div><i class="fas fa-check-circle" style="color: green;"></i> {{ article.title }}</div>
+                    {% endfor %}
+                </div>
+                <article class="mb-4">
+                    <div class="container px-4 px-lg-5">
+                        <div class="row gx-4 gx-lg-5 justify-content-center">
+                        {% for article in articles %}
+                            <div class="col-md-10 col-lg-8 col-xl-7" id="article-{{ forloop.counter }}">
+                                <h2 class="section-heading">{{ article.title }}</h2>
+                                <a><img class="post-image" src="{{ article.image }}" alt="..." /></a>
+                                <div class="article-link"><p>출처: <b><a href="{{ article.link }}" style="text-decoration: none; color: gray;">테크레시피</a></b></p></div>
+                                <div class="article-summary">
+                                    <p><i class="fas fa-check-circle"></i> {{ article.summary.first_sentence }}</p>
+                                    <p style="margin-top: 20px;"><i class="fas fa-check-circle"></i> {{ article.summary.second_sentence }}</p>
+                                    <p style="margin-top: 20px;"><i class="fas fa-check-circle"></i> {{ article.summary.third_sentence }}</p>
                                 </div>
                             </div>
-                        </article>
+                        {% endfor %}
+                        </div>
                     </div>
-                </div>
+                </article>
             </div>
         </div>
     </div>
