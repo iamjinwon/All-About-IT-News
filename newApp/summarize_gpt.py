@@ -6,15 +6,17 @@ import sys
 from datetime import datetime, time
 import pytz
 
+# 경로 설정
 current_path = os.path.dirname(os.path.abspath(__file__))
 project_path = os.path.join(current_path, '..')
 sys.path.append(project_path)
 os.chdir(project_path)
 
+# Django 설정
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newProject.settings')
 django.setup()
 
-from newApp.models import News, SummarizeNews
+from newApp.models import News, SummarizeNews, Gpt  # Gpt 모델 추가
 
 # .env 파일 경로 명시
 dotenv_path = os.path.join(project_path, '.env')
@@ -35,7 +37,19 @@ def summarize_gpt(system_prompt, news_content):
     )
 
     result = response.choices[0].message.content
-    return result
+    input_tokens = response.usage.prompt_tokens  # 수정된 부분
+    output_tokens = response.usage.completion_tokens  # 수정된 부분
+    total_tokens = response.usage.total_tokens  # 수정된 부분
+    return result, input_tokens, output_tokens, total_tokens
+
+def calculate_cost(model, input_tokens, output_tokens):
+    if model == "gpt-4o":
+        input_cost_per_token = 5 / 1_000_000  # 1백만 토큰당 $5
+        output_cost_per_token = 15 / 1_000_000  # 1백만 토큰당 $15
+        cost = (input_cost_per_token * input_tokens) + (output_cost_per_token * output_tokens)
+        return cost
+    else:
+        raise ValueError("Unsupported model")
 
 def summarize_articles():
     system_prompt = """
@@ -69,7 +83,9 @@ def summarize_articles():
         description = news.description
         news_id = news.news_id
 
-        summarize = summarize_gpt(system_prompt, description)
+        summarize, su_input_tokens, su_output_tokens, su_total_tokens = summarize_gpt(system_prompt, description)
+        su_cost = calculate_cost("gpt-4o", su_input_tokens, su_output_tokens)
+
         if summarize:
             summary_lines = summarize.strip().split('\n')
             
@@ -90,6 +106,17 @@ def summarize_articles():
                     print(f"Created new summary for news_id {news_id}")
                 else:
                     print(f"Updated existing summary for news_id {news_id}")
+                
+                # GPT 테이블에 데이터 삽입
+                Gpt.objects.update_or_create(
+                    news_id=news_id,
+                    defaults={
+                        'su_input_tokens': su_input_tokens,
+                        'su_output_tokens': su_output_tokens,
+                        'su_total_tokens': su_total_tokens,
+                        'su_cost': su_cost,
+                    }
+                )
             else:
                 print(f"Summarization did not return enough sentences for news_id {news_id}")
 
