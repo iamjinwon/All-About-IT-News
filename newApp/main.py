@@ -42,7 +42,7 @@ def main(crawl=True, update=True, summarize=True, send_email=True):
 
 def schedule_jobs():
     scheduler = BlockingScheduler(timezone="Asia/Seoul")
-    scheduler.add_job(main, 'cron', hour=19, minute=25)
+    scheduler.add_job(main, 'cron', hour=15, minute=27)
     # scheduler.add_job(lambda: stop_scheduler(scheduler), 'cron', hour=18, minute=1)
     logging.info("스케줄러가 설정되었습니다. 매일 오후 3시 29분에 작업이 실행됩니다.")
     scheduler.start()

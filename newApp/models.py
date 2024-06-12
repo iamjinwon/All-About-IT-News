@@ -42,3 +42,19 @@ class UserSend(models.Model):
     class Meta:
         managed = False
         db_table = 'user_send'
+
+class Gpt(models.Model):
+    news = models.OneToOneField('News', on_delete=models.CASCADE, primary_key=True)
+    fe_input_tokens = models.IntegerField(null=True)
+    fe_output_tokens = models.IntegerField(null=True)
+    fe_total_tokens = models.IntegerField(null=True)
+    fe_cost = models.FloatField(null=True)
+    su_input_tokens = models.IntegerField(null=True)
+    su_output_tokens = models.IntegerField(null=True)
+    su_total_tokens = models.IntegerField(null=True)
+    su_cost = models.FloatField(null=True)
+    created_dt = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        managed = True
+        db_table = 'Gpt'
