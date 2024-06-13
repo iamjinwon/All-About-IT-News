@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 from newApp.models import News, SummarizeNews
 from .forms import UserForm
+from .models import User
 
 def index(request):
     # 데이터베이스에서 뉴스 날짜 목록을 가져오기
@@ -15,23 +16,35 @@ def index(request):
 
     articles_with_display = [(date, datetime.strptime(date, '%Y%m%d').strftime('%Y년 %-m월 %-d일')) for date in formatted_articles]
 
-    return render(request, "newApp/index.html", {"articles": articles_with_display})
+    subscriber_count = User.objects.count()  # 구독자 수 계산
+
+    return render(request, "newApp/index.html", {"articles": articles_with_display, "subscriber_count": subscriber_count})
 
 def contact(request):
     success = False
     error_message = None
     if request.method == 'POST':
         form = UserForm(request.POST)
-        try:
-            if form.is_valid():
+        if form.is_valid():
+            try:
                 form.save()
-                success = True  # 폼이 성공적으로 제출되었음을 표시
-        except ValidationError as e:
-            error_message = e.message
+                success = True
+                form = UserForm()  # 폼을 새 인스턴스로 초기화하여 입력 칸 비우기
+            except ValidationError as e:
+                error_message = e.message
+        else:
+            error_message = form.errors.as_text()
     else:
         form = UserForm()
     
-    return render(request, 'newApp/contact.html', {'form': form, 'success': success, 'error_message': error_message})
+    subscriber_count = User.objects.count()  # 구독자 수 계산
+
+    return render(request, 'newApp/contact.html', {
+        'form': form,
+        'success': success,
+        'error_message': error_message,
+        'subscriber_count': subscriber_count,  # 구독자 수 템플릿에 전달
+    })
 
 def post(request, date_str):
     try:
@@ -60,8 +73,10 @@ def post(request, date_str):
                 }
                 combined_articles.append(combined_article)
 
+        subscriber_count = User.objects.count()  # 구독자 수 계산
+
         # Render the template with articles and display_date
-        return render(request, "newApp/post.html", {"articles": combined_articles, "display_date": display_date})
+        return render(request, "newApp/post.html", {"articles": combined_articles, "display_date": display_date, "subscriber_count": subscriber_count})
     
     except ValueError:
         # Handle exceptions for date parsing
