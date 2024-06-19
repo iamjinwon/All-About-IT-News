@@ -1,7 +1,8 @@
 from django.db import models
+import uuid
 
 class News(models.Model):
-    news_id = models.AutoField(primary_key=True)  # AutoField로 수정
+    news_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=45, blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
     image = models.TextField(blank=True, null=True)
@@ -11,7 +12,7 @@ class News(models.Model):
     crucial = models.BooleanField(default=False)
 
     class Meta:
-        managed = True  # Django가 이 모델을 관리하도록 변경
+        managed = True
         db_table = 'News'
 
 class SummarizeNews(models.Model):
@@ -20,24 +21,26 @@ class SummarizeNews(models.Model):
     second_sentence = models.TextField(blank=True, null=True)
     third_sentence = models.TextField(blank=True, null=True)
     created_dt = models.DateTimeField(blank=True, null=True)
+    views = models.IntegerField(default=0)  # 조회수 필드 추가
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Summarize_news'
 
 class User(models.Model):
-    user_id = models.AutoField(primary_key=True) 
-    user_name = models.CharField(max_length=45, null=True, blank=True) 
+    user_id = models.AutoField(primary_key=True)
+    user_name = models.CharField(max_length=45, null=True, blank=True)
     email = models.CharField(max_length=45)
+    unsubscribe_token = models.UUIDField(default=uuid.uuid4, editable=False)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'user'
 
 class UserSend(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
     news = models.ForeignKey(News, models.DO_NOTHING)
-    send = models.BooleanField(default=False)  # send 필드 추가
+    send = models.BooleanField(default=False)
 
     class Meta:
         managed = False

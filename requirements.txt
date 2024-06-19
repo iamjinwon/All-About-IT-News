@@ -1,0 +1,8 @@
+Django>=3.2,<4.0
+pdfkit==0.6.1
+gunicorn
+dj-database-url
+python-decouple
+django-cors-headers
+django-crispy-forms
+crispy-bootstrap5

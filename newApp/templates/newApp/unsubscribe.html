@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구독 취소</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .button {
+            text-decoration: none;
+            color: white;
+            background-color: red;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-content">
+        <p>{{ user.user_name }}님, 구독을 취소하시겠습니까?</p>
+        <button id="unsubscribe-button" class="button">구독 취소하기</button>
+    </div>
+    <script>
+        document.getElementById('unsubscribe-button').onclick = function() {
+            var userEmail = "{{ user.email }}";
+            var userName = "{{ user.user_name }}";
+            fetch('/IT_news/unsubscribe/process_unsubscribe/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({email: userEmail, name: userName})
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    alert("구독이 취소되었습니다.");
+                    window.close();
+                } else {
+                    alert("구독 취소에 실패했습니다.");
+                }
+            }).catch(error => console.error('Error:', error));
+        };
+        
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

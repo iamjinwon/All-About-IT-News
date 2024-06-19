@@ -1,62 +1,53 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.core.exceptions import ValidationError
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.http import JsonResponse
+from django.db.models import Sum, F
 from newApp.models import News, SummarizeNews
 from .forms import UserForm
-from .models import User
+from .models import User, News
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
 
 def index(request):
-    # 데이터베이스에서 뉴스 날짜 목록을 가져오기
     news_dates = News.objects.dates('created_dt', 'day', order='DESC')
 
     formatted_articles = []
     for date in news_dates:
         formatted_date = date.strftime('%Y%m%d')
-        formatted_articles.append(formatted_date)
+        articles = News.objects.filter(
+            created_dt__date=datetime.strptime(formatted_date, '%Y%m%d').date(),
+            crucial=True
+        )
+        if articles.exists():
+            first_article = articles.first()
+            formatted_articles.append({
+                'date': formatted_date,
+                'display_date': datetime.strptime(formatted_date, '%Y%m%d').strftime('%Y년 %-m월 %-d일'),
+                'image': first_article.image,
+            })
 
-    articles_with_display = [(date, datetime.strptime(date, '%Y%m%d').strftime('%Y년 %-m월 %-d일')) for date in formatted_articles]
+    subscriber_count = User.objects.count()
 
-    subscriber_count = User.objects.count()  # 구독자 수 계산
+    return render(request, "newApp/index.html", {"articles": formatted_articles, "subscriber_count": subscriber_count})
 
-    return render(request, "newApp/index.html", {"articles": articles_with_display, "subscriber_count": subscriber_count})
-
-def contact(request):
-    success = False
-    error_message = None
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            try:
-                form.save()
-                success = True
-                form = UserForm()  # 폼을 새 인스턴스로 초기화하여 입력 칸 비우기
-            except ValidationError as e:
-                error_message = e.message
-        else:
-            error_message = form.errors.as_text()
-    else:
-        form = UserForm()
-    
-    subscriber_count = User.objects.count()  # 구독자 수 계산
-
-    return render(request, 'newApp/contact.html', {
-        'form': form,
-        'success': success,
-        'error_message': error_message,
-        'subscriber_count': subscriber_count,  # 구독자 수 템플릿에 전달
-    })
 
 def post(request, date_str):
     try:
-        # Format the date to YYYY년 MM월 DD일
         date = datetime.strptime(date_str, '%Y%m%d')
         display_date = date.strftime('%Y년 %-m월 %-d일')
 
-        # 데이터베이스에서 해당 날짜의 기사 가져오기
         original_articles = News.objects.filter(created_dt__date=date.date(), news_id__in=SummarizeNews.objects.values('news_id')).values()
         summarized_articles = SummarizeNews.objects.filter(news_id__in=[article['news_id'] for article in original_articles]).values()
 
-        # 원본 기사와 요약 기사 결합
+        if not original_articles.exists():
+            print("오늘의 기사를 찾을 수 없습니다.")
+            return ""
+        if not summarized_articles.exists():
+            print("오늘의 요약 기사를 찾을 수 없습니다.")
+            return ""
+
         summarized_dict = {summary['news_id']: summary for summary in summarized_articles}
         combined_articles = []
         for article in original_articles:
@@ -73,18 +64,74 @@ def post(request, date_str):
                 }
                 combined_articles.append(combined_article)
 
-        subscriber_count = User.objects.count()  # 구독자 수 계산
+        # 조회수 증가 및 조회수 가져오기
+        summarized_news = SummarizeNews.objects.filter(news__in=[article['news_id'] for article in original_articles])
+        views_count = summarized_news.aggregate(total_views=Sum('views'))['total_views'] or 0
+        summarized_news.update(views=F('views') + 1)
+        
+        # 조회수를 정수형으로 변환
+        views_count = int(views_count / len(combined_articles))
 
-        # Render the template with articles and display_date
-        return render(request, "newApp/post.html", {"articles": combined_articles, "display_date": display_date, "subscriber_count": subscriber_count})
-    
+        subscriber_count = User.objects.count()
+
+        if request.method == 'POST':
+            form = UserForm(request.POST)
+            if form.is_valid():
+                try:
+                    form.save()
+                    return JsonResponse({"success": True})
+                except ValidationError as e:
+                    return JsonResponse({"success": False, "error_message": str(e)})
+            else:
+                error_messages = [str(error) for error_list in form.errors.values() for error in error_list]
+                return JsonResponse({"success": False, "error_message": " ".join(error_messages)})
+        else:
+            form = UserForm()
+
+        return render(request, "newApp/post.html", {
+            "articles": combined_articles,
+            "display_date": display_date,
+            "subscriber_count": subscriber_count,
+            "views_count": views_count,
+            "form": form,
+            "date_str": date_str
+        })
+
     except ValueError:
-        # Handle exceptions for date parsing
         return HttpResponse("Invalid date format. Please use the correct format: YYYY년 MM월 DD일", status=400)
     except News.DoesNotExist:
-        # Handle exceptions for missing files
         return HttpResponse("The requested page does not exist.", status=404)
 
 def redirect_to_today_post(request):
     today_date_str = datetime.now().strftime('%Y%m%d')
-    return redirect('post', date_str=today_date_str)
+    yesterday_date_str = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+    
+    today_exists = News.objects.filter(created_dt__date=datetime.now().date()).exists()
+
+    if today_exists:
+        return redirect('post', date_str=today_date_str)
+    else:
+        yesterday_exists = News.objects.filter(created_dt__date=datetime.now().date() - timedelta(days=1)).exists()
+        if yesterday_exists:
+            return redirect('post', date_str=yesterday_date_str)
+        else:
+            return HttpResponse("No articles available for today or yesterday.", status=404)
+
+def unsubscribe(request):
+    token = request.GET.get('token')
+    user = get_object_or_404(User, unsubscribe_token=token) 
+    return render(request, 'newApp/unsubscribe.html', {'user': user})
+
+@csrf_exempt
+def process_unsubscribe(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        user_name = data.get('name')
+        try:
+            user = User.objects.get(email=email, user_name=user_name)
+            user.delete()
+            return JsonResponse({'success': True})
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'User not found'})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

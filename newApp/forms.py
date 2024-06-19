@@ -7,10 +7,14 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['user_name', 'email']
-        labels = {
-            'user_name': '이름',
-            'email': '이메일',
-        }
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.fields['user_name'].widget.attrs['placeholder'] = '이름'
+        self.fields['user_name'].label = ''
+        self.fields['email'].widget.attrs['placeholder'] = '이메일'
+        self.fields['email'].label = ''
+        self.fields['email'].required = False
 
     def clean_user_name(self):
         user_name = self.cleaned_data.get('user_name')
@@ -20,13 +24,13 @@ class UserForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        
-        try:
-            validate_email(email)
-        except ValidationError:
-            raise ValidationError("유효하지 않은 이메일 형식입니다.")
+        if email:  # 이메일 필드가 비어있지 않을 경우만 검증
+            try:
+                validate_email(email)
+            except ValidationError:
+                raise ValidationError("유효하지 않은 이메일 형식입니다.")
 
-        if User.objects.filter(email=email).exists():
-            raise ValidationError("이미 구독된 이메일입니다.")
+            if User.objects.filter(email=email).exists():
+                raise ValidationError("이미 구독된 이메일입니다.")
 
         return email

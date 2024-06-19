@@ -10,11 +10,11 @@ os.chdir(project_path)
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newProject.settings')
 django.setup()
 
-from newApp.models import SummarizeNews
+from newApp.models import User
 
-def delete_all_SummarizeNews():
-    SummarizeNews.objects.all().delete()
+def delete_all_User():
+    User.objects.all().delete()
     print("All news records have been deleted.")
 
 if __name__ == "__main__":
-    delete_all_SummarizeNews()
+    delete_all_User()
