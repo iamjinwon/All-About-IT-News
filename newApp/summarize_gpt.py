@@ -51,9 +51,9 @@ def calculate_cost(model, input_tokens, output_tokens):
 
 def summarize_articles():
     seoul_tz = pytz.timezone('Asia/Seoul')
-    now = datetime.now(seoul_tz)
-    today_start = datetime.combine(now.date(), time.min).astimezone(seoul_tz)
-    today_end = datetime.combine(now.date(), time.max).astimezone(seoul_tz)
+    now = datetime.now(seoul_tz).replace(tzinfo=None)
+    today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)
+    today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)
 
     news_data = News.objects.filter(created_dt__range=(today_start, today_end), crucial=True)
 
@@ -65,8 +65,9 @@ def summarize_articles():
         description = news.description
         news_id = news.news_id
 
-        summarize, su_input_tokens, su_output_tokens, su_total_tokens = summarize_gpt(system_prompt2, description)
-        su_cost = calculate_cost("gpt-4o", su_input_tokens, su_output_tokens)
+        summarize, input_tokens, output_tokens, total_tokens = summarize_gpt(system_prompt2, description)
+        cost = calculate_cost("gpt-4o", input_tokens, output_tokens)
+        cost_won = cost * 1300
 
         if summarize:
             summary_lines = summarize.strip().split('\n')
@@ -89,14 +90,13 @@ def summarize_articles():
                 else:
                     print(f"Updated existing summary for news_id {news_id}")
                 
-                Gpt.objects.update_or_create(
-                    news_id=news_id,
-                    defaults={
-                        'su_input_tokens': su_input_tokens,
-                        'su_output_tokens': su_output_tokens,
-                        'su_total_tokens': su_total_tokens,
-                        'su_cost': su_cost,
-                    }
+                Gpt.objects.create(
+                    task="기사요약",
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                    total_tokens=total_tokens,
+                    cost_dollar=cost,
+                    cost_won=cost_won,
                 )
             else:
                 print(f"Summarization did not return enough sentences for news_id {news_id}")

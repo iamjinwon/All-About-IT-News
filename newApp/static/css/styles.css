@@ -10552,10 +10552,6 @@ textarea.form-control-lg {
 
 
 
-body {
-  font-size: 1.25rem;
-}
-
 hr {
   border-color: #dee2e6;
   opacity: 1;
@@ -10825,7 +10821,7 @@ header.masthead .post-heading .meta a {
   background-color: #e9ecef;
   border-radius: 10px;
   margin: 20px 0;
-  padding: 15px;
+  padding: 0px 15px 0px 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: left;
   font-family: 'Roboto', sans-serif;
@@ -10883,6 +10879,7 @@ header.masthead .post-heading .meta a {
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: left;
+  font-family: 'Roboto', sans-serif;
 }
 
 .article-summary p {
@@ -10893,7 +10890,7 @@ header.masthead .post-heading .meta a {
 }
 .post-image {
   width: 100%;
-  height: auto;
+  height: 409px;
   margin: 20px 0 0 0;
 }
 
@@ -10980,38 +10977,11 @@ footer {
   }
 }
 
-
-/* 모달 내부 스타일 */
-.modal-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 20px; /* 헤더 여백 조정 */
-  border-bottom: none; /* 하단 경계선 제거 */
-}
-
-.modal-header .btn-close {
-  position: absolute;
-  right: 10px;
-  top: 10px; /* 상단 여백 줄이기 */
-}
-
-.modal-body {
+.container, .text-center {
   text-align: center;
-  padding: 10px 20px; /* 본문 여백 줄이기 */
 }
-
-.modal-body p, .modal-body img {
-  margin: 10px 0; /* 텍스트와 이미지 간의 여백 조정 */
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
-
-.modal-content {
-  padding: 10px; /* 모달 내용의 내부 여백 줄이기 */
-}
-
-.modal-dialog {
-  max-width: 600px; /* 모달 크기 조정 */
-  margin: 1.75rem auto; /* 중앙 정렬 */
-}
-
 }

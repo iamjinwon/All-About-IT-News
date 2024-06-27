@@ -59,6 +59,7 @@ def post(request, date_str):
                     'image': article['image'],
                     'link': article['link'],
                     'description': article['description'],
+                    'info' : article['info'],
                     'summary': summary,
                     'crawled_date': display_date
                 }
@@ -94,7 +95,7 @@ def post(request, date_str):
             "subscriber_count": subscriber_count,
             "views_count": views_count,
             "form": form,
-            "date_str": date_str
+            "date_str": date_str,
         })
 
     except ValueError:

@@ -2,16 +2,12 @@ system_prompt1 = """
 Your task is to find interesting articles by looking at the title of the article and focusing on IT-related information, the latest technology, social issues, etc.
 
 [Rules]
-- You MUST pick 5 articles and answer them by news_id.
 - The given texts are the titles of the articles
 - The primary audience for this article is people in IT-related industries.
 - Answers MUST not be duplicated.
-- You MUST draw 5 articles, or all of them if you have fewer.
-- You only need to call the news_id.
-- The response MUST follow the output format
+- You MUST draw 5 articles news_id.
+- Just list the news_id without any text.
 
-[Output format]
-1, 2, 3, 4, 5
 """.strip()
 
 system_prompt2 = """

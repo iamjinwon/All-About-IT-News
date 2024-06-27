@@ -16,6 +16,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newProject.settings')
 django.setup()
 
 from newApp.models import News
+
 SEOUL_TZ = pytz.timezone('Asia/Seoul')
 MAX_RETRIES = 2
 PAGE_LIMIT_HOURS = 12
@@ -49,6 +50,7 @@ def is_page_end(time):
 
 def crawling():
     page = 1
+    default_image_url = "https://i.ibb.co/BtYZ3yx/DALL-E-2024-06-27-22-48-57-Create-a-wide-logo-for-a-website-named-ALL-ABOUT-IT-NEWS-The-logo-should.webp" # 기본 이미지 URL 설정
 
     while True:
         url = f"https://techrecipe.co.kr/category/news/page/{page}"
@@ -67,23 +69,22 @@ def crawling():
                 page_end = True
                 break
             if "위클리" in news.text:
-                continue 
-            
-            soup2 = fetch_page(link)
+                continue
 
+            soup2 = fetch_page(link)
             description_div = soup2.find('div', class_ = 'entry-content')
             paragraph_texts = [p.text for p in description_div.find_all('p')]
             paragraph_texts_convert = " ".join(paragraph_texts)
 
-            image_src = images[index]['src']
+            image_src = images[index]['src'] if index < len(images) else default_image_url
 
-            # 데이터베이스에 저장
             News.objects.create(
                 title=news.text.strip(),
-                date=time,
+                date=time.replace(tzinfo=None),
                 image=image_src,
                 link=link,
-                description=paragraph_texts_convert
+                description=paragraph_texts_convert,
+                info = "테크레시피"
             )
 
         if page_end:
