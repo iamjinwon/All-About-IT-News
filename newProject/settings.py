@@ -4,9 +4,12 @@ import newProject.my_email as my_email
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "3.36.125.77"
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
