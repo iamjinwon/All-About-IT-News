@@ -1,9 +1,6 @@
 from pathlib import Path
-import pdfkit
 import newProject.my_settings as my_settings
 import newProject.my_email as my_email
-
-PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
