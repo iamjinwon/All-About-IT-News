@@ -24,9 +24,9 @@ from newApp.models import News, SummarizeNews, User
 def create_html(recipient_email):
     try:
         seoul_tz = pytz.timezone('Asia/Seoul')
-        now = datetime.now(seoul_tz)
-        today_start = datetime.combine(now.date(), time.min).astimezone(seoul_tz)
-        today_end = datetime.combine(now.date(), time.max).astimezone(seoul_tz)
+        now = datetime.now(seoul_tz).replace(tzinfo=None)  # naive datetime
+        today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)  # naive datetime
+        today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)  # naive datetime
         date_formatted = now.strftime('%Y년 %-m월 %-d일')
         user = User.objects.get(email=recipient_email)
 
@@ -57,6 +57,7 @@ def create_html(recipient_email):
                     'image': article.image,
                     'link': article.link,
                     'description': article.description,
+                    'info' : article.info,
                     'summary': {
                         'first_sentence': summary.first_sentence,
                         'second_sentence': summary.second_sentence,
@@ -110,6 +111,7 @@ def create_html(recipient_email):
                 text-align: left;
                 width : 698px;
                 margin: 20px auto; 
+                font-size: 15px;
                 }}
                 .article-summary p {{
                 margin: 0;
@@ -137,7 +139,11 @@ def create_html(recipient_email):
         """
         summary_box_html = f"""
         <div class="text-center" style="margin-top: 60px; text-align: center;">
-            <p style="font-size: 30px; font-weight: bold; margin-bottom: 5px;">
+            <a>
+                <img src="https://i.ibb.co/BtYZ3yx/DALL-E-2024-06-27-22-48-57-Create-a-wide-logo-for-a-website-named-ALL-ABOUT-IT-NEWS-The-logo-should.webp" alt="DALL-E-2024-06-27-22-48-57-Create-a-wide-logo-for-a-website-named-ALL-ABOUT-IT-NEWS-The-logo-should" width="728" style="display: block; margin: 0 auto; margin-bottom: 5px; border-radius: 10px;">
+            </a>
+            <a href="http://127.0.0.1:8000/IT_news/" style="text-decoration: none; font-size: 14px; color: gray; font-family: 'Roboto', sans-serif;">[웹에서 보러가기]</a>
+            <p style="font-size: 30px; font-weight: bold; margin-top: 70px; margin-bottom: 5px;">
                 🔥 매일 아침 6시에 최신 
                 <span style="color: red;">IT 뉴스</span> 5가지를 무료로 받아보세요 🔥
             </p>
@@ -150,7 +156,7 @@ def create_html(recipient_email):
         """
         for article in combined_articles:
             summary_box_html += f"""
-            <div>✅ {article['title']}</div>
+            <p style="line-height: 2;">✅ {article['title']}</p>
             """
         summary_box_html += "</div>"
 
@@ -158,9 +164,9 @@ def create_html(recipient_email):
 
         for article in combined_articles:
             article_html = f"""
-                <h2 class="section-heading">{article['title']}</h2>
+                <h2 class="section-heading" style="margin-top: 70px;">{article['title']}</h2>
                 <img class="post-image" src="{article['image']}" alt="..."/>
-                <div class="article-link"><p style="margin : 32px 0 32px 0;">출처: <b><a href="{article['link']}" style="text-decoration: none; color: gray;">테크레시피</a></b></p></div>
+                <div class="article-link"><p style="margin : 32px 0 32px 0; font-size: 11.2px;">출처: <b><a href="{article['link']}" style="text-decoration: none; color: gray; ">{article['info']}</a></b></p></div>
                 <div class="article-summary">
                     <p>✅ {article['summary']['first_sentence']}</p>
                     <p style="margin-top: 20px;">✅ {article['summary']['second_sentence']}</p>
@@ -171,8 +177,9 @@ def create_html(recipient_email):
             combined_html += article_html
 
         combined_html += f"""
+        <hr style="width: 728px; color: gray; border: none; border-top: 1px solid gray; margin: 0 auto; margin-top: 100px;" />
         </div>
-        <div style="text-align: center; margin-top: 70px; height: 50px;">
+        <div style="text-align: center; margin-top: 100px; height: 50px;">
             <a href="{unsubscribe_url}" id="unsubscribe-button" style="text-decoration: none; color: white; background-color: red; padding: 10px 20px; border-radius: 5px;">뉴스레터 구독취소하기</a>
         </div>
         </body></html>
@@ -186,9 +193,9 @@ def create_html(recipient_email):
 def create_html_for_gmail(recipient_email):
     try:
         seoul_tz = pytz.timezone('Asia/Seoul')
-        now = datetime.now(seoul_tz)
-        today_start = datetime.combine(now.date(), time.min).astimezone(seoul_tz)
-        today_end = datetime.combine(now.date(), time.max).astimezone(seoul_tz)
+        now = datetime.now(seoul_tz).replace(tzinfo=None)  # naive datetime
+        today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)  # naive datetime
+        today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)  # naive datetime
         date_formatted = now.strftime('%Y년 %-m월 %-d일')
         user = User.objects.get(email=recipient_email)
 
@@ -219,6 +226,7 @@ def create_html_for_gmail(recipient_email):
                     'image': article.image,
                     'link': article.link,
                     'description': article.description,
+                    'info' : article.info,
                     'summary': {
                         'first_sentence': summary.first_sentence,
                         'second_sentence': summary.second_sentence,
@@ -265,7 +273,6 @@ def create_html_for_gmail(recipient_email):
                 color: gray;
                 }}
                 .article-summary {{
-                background-color: #ffffff;
                 padding: 15px;
                 border-radius: 5px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -273,6 +280,7 @@ def create_html_for_gmail(recipient_email):
                 width : 698px;
                 margin: 20px auto;
                 background-color: #e9ecef;
+                font-size: 15px;
                 }}
                 .article-summary p {{
                 margin: 0;
@@ -300,7 +308,11 @@ def create_html_for_gmail(recipient_email):
         """
         summary_box_html = f"""
         <div class="text-center" style="margin-top: 60px; text-align: center;">
-            <p style="font-size: 30px; font-weight: bold; margin-bottom: 5px;">
+            <a>
+                <img src="https://i.ibb.co/BtYZ3yx/DALL-E-2024-06-27-22-48-57-Create-a-wide-logo-for-a-website-named-ALL-ABOUT-IT-NEWS-The-logo-should.webp" alt="DALL-E-2024-06-27-22-48-57-Create-a-wide-logo-for-a-website-named-ALL-ABOUT-IT-NEWS-The-logo-should" width="728" style="display: block; margin: 0 auto; margin-bottom: 5px; border-radius: 10px;">
+            </a>
+            <a href="http://127.0.0.1:8000/IT_news/" style="text-decoration: none; font-size: 14px; color: gray; font-family: 'Roboto', sans-serif;">[웹에서 보러가기]</a>
+            <p style="font-size: 30px; font-weight: bold; margin-top: 70px; margin-bottom: 5px;">
                 🔥 매일 아침 6시에 최신 
                 <span style="color: red;">IT 뉴스</span> 5가지를 무료로 받아보세요 🔥
             </p>
@@ -313,7 +325,7 @@ def create_html_for_gmail(recipient_email):
         """
         for article in combined_articles:
             summary_box_html += f"""
-            <div>✅ {article['title']}</div>
+            <p style="margin: 0; line-height: 2;">✅ {article['title']}</p>
             """
         summary_box_html += "</div>"
 
@@ -321,9 +333,9 @@ def create_html_for_gmail(recipient_email):
 
         for article in combined_articles:
             article_html = f"""
-                <h2 class="section-heading">{article['title']}</h2>
+                <h2 class="section-heading" style="margin-top: 70px;">{article['title']}</h2>
                 <img class="post-image" src="{article['image']}" alt="..."/>
-                <div class="article-link"><p style="margin : 32px 0 32px 0;">출처: <b><a href="{article['link']}" style="text-decoration: none; color: gray;">테크레시피</a></b></p></div>
+                <div class="article-link"><p style="margin : 32px 0 32px 0; font-size: 11.2px;">출처: <b><a href="{article['link']}" style="text-decoration: none; color: gray;">{article['info']}</a></b></p></div>
                 <div class="article-summary">
                     <p>✅ {article['summary']['first_sentence']}</p>
                     <p style="margin-top: 20px;">✅ {article['summary']['second_sentence']}</p>
@@ -334,8 +346,9 @@ def create_html_for_gmail(recipient_email):
             combined_html += article_html
 
         combined_html += f"""
+        <hr style="width: 728px; color: gray; border: none; border-top: 1px solid gray; margin: 0 auto; margin-top: 100px;" />
         </div>
-        <div style="text-align: center; margin-top: 70px; height: 50px;">
+        <div style="text-align: center; margin-top: 100px; height: 50px;">
             <a href="{unsubscribe_url}" id="unsubscribe-button" style="text-decoration: none; color: white; background-color: red; padding: 10px 20px; border-radius: 5px;">뉴스레터 구독취소하기</a>
         </div>
         </body></html>
@@ -385,8 +398,6 @@ def send_email_with_attachment():
             print(f"Email sent to {recipient}")
         except Exception as e:
             print(f"Failed to send email to {recipient}: {e}")
-
-
 
 if __name__ == "__main__":
     send_email_with_attachment()

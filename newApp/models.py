@@ -3,12 +3,13 @@ import uuid
 
 class News(models.Model):
     news_id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=45, blank=True, null=True)
+    title = models.TextField(blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
     image = models.TextField(blank=True, null=True)
     link = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     created_dt = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    info = models.CharField(max_length=45, blank=True, null=True)
     crucial = models.BooleanField(default=False)
 
     class Meta:
@@ -47,16 +48,13 @@ class UserSend(models.Model):
         db_table = 'user_send'
 
 class Gpt(models.Model):
-    news = models.OneToOneField('News', on_delete=models.CASCADE, primary_key=True)
-    fe_input_tokens = models.IntegerField(null=True)
-    fe_output_tokens = models.IntegerField(null=True)
-    fe_total_tokens = models.IntegerField(null=True)
-    fe_cost = models.FloatField(null=True)
-    su_input_tokens = models.IntegerField(null=True)
-    su_output_tokens = models.IntegerField(null=True)
-    su_total_tokens = models.IntegerField(null=True)
-    su_cost = models.FloatField(null=True)
-    created_dt = models.DateTimeField(auto_now_add=True)
+    task = models.CharField(max_length=45)  # 작업 유형을 나타내는 필드
+    input_tokens = models.IntegerField()  # 입력 토큰 수
+    output_tokens = models.IntegerField()  # 출력 토큰 수
+    total_tokens = models.IntegerField()  # 총 토큰 수
+    cost_dollar = models.FloatField()  # 비용(달러)
+    cost_won = models.FloatField()  # 비용(원)
+    created_dt = models.DateTimeField(auto_now_add=True)  # 생성 날짜와 시간
 
     class Meta:
         managed = True

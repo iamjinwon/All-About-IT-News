@@ -7,7 +7,6 @@ from datetime import datetime, time
 import pytz
 from system_prompt import system_prompt1
 
-
 current_path = os.path.dirname(os.path.abspath(__file__))
 project_path = os.path.join(current_path, '..')
 sys.path.append(project_path)
@@ -20,8 +19,6 @@ from newApp.models import News, Gpt
 
 dotenv_path = os.path.join(project_path, '.env')
 load_dotenv(dotenv_path=dotenv_path)
-
-
 
 def make_output(system_prompt, content):
     client = OpenAI(
@@ -43,8 +40,6 @@ def make_output(system_prompt, content):
     total_tokens = response.usage.total_tokens
     return result, input_tokens, output_tokens, total_tokens
 
-
-
 def calculate_cost(model, input_tokens, output_tokens):
     if model == "gpt-4o":
         input_cost_per_token = 5 / 1_000_000
@@ -54,13 +49,11 @@ def calculate_cost(model, input_tokens, output_tokens):
     else:
         raise ValueError("Unsupported model")
 
-
-
 def update_crucial_articles():
     seoul_tz = pytz.timezone('Asia/Seoul')
-    now = datetime.now(seoul_tz)
-    today_start = datetime.combine(now.date(), time.min).astimezone(seoul_tz)
-    today_end = datetime.combine(now.date(), time.max).astimezone(seoul_tz)
+    now = datetime.now(seoul_tz).replace(tzinfo=None) 
+    today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)
+    today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None) 
 
     news_data = News.objects.filter(created_dt__range=(today_start, today_end)).values_list('news_id', 'title')
 
@@ -81,18 +74,17 @@ def update_crucial_articles():
 
     # 비용 계산
     fe_cost = calculate_cost("gpt-4o", fe_input_tokens, fe_output_tokens)
+    cost_won = fe_cost * 1300
 
     # GPT 테이블에 데이터 삽입
-    for news_id in selected_news_ids:
-        Gpt.objects.update_or_create(
-            news_id=news_id,
-            defaults={
-                'fe_input_tokens': fe_input_tokens,
-                'fe_output_tokens': fe_output_tokens,
-                'fe_total_tokens': fe_total_tokens,
-                'fe_cost': fe_cost,
-            }
-        )
+    Gpt.objects.create(
+        task="기사분류",
+        input_tokens=fe_input_tokens,
+        output_tokens=fe_output_tokens,
+        total_tokens=fe_total_tokens,
+        cost_dollar=fe_cost,
+        cost_won=cost_won,
+    )
 
     # News 테이블의 crucial 컬럼 업데이트
     News.objects.filter(news_id__in=selected_news_ids).update(crucial=True)
