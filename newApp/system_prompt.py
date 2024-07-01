@@ -6,8 +6,10 @@ Your task is to find interesting articles by looking at the title of the article
 - The primary audience for this article is people in IT-related industries.
 - Answers MUST not be duplicated.
 - You MUST draw 5 articles news_id.
-- Just list the news_id without any text.
+- Your answers MUST follow the [Output Format].
 
+[Output Format]
+news_id, news_id, news_id, news_id, news_id
 """.strip()
 
 system_prompt2 = """
