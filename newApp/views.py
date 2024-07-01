@@ -24,7 +24,7 @@ def index(request):
             first_article = articles.first()
             formatted_articles.append({
                 'date': formatted_date,
-                'display_date': datetime.strptime(formatted_date, '%Y%m%d').strftime('%Y년 %-m월 %-d일'),
+                'display_date': datetime.strptime(formatted_date, '%Y%m%d').strftime('%Y년 %m월 %d일'),
                 'image': first_article.image,
             })
 
