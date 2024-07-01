@@ -10544,14 +10544,6 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
-
-
-
-
-
-
-
-
 hr {
   border-color: #dee2e6;
   opacity: 1;
@@ -10751,8 +10743,6 @@ header.masthead .post-heading .meta a {
     font-size: 1.875rem;
   }
 }
-
-
 .caption {
   font-size: 0.875rem;
   font-style: italic;
@@ -10791,12 +10781,6 @@ header.masthead .post-heading .meta a {
   .post-preview > a > .post-title {
     font-size: 2.25rem;
   } 
-
-
-
-
-
-
 .masthead {
   text-align: center;
 }
@@ -10810,13 +10794,11 @@ header.masthead .post-heading .meta a {
 .post-heading {
   margin-bottom: 50px;
 }
-
 .article-link {
   text-align: center;
   font-size: 0.7em;
   color: gray;
 }
-
 .summary-box {
   background-color: #e9ecef;
   border-radius: 10px;
@@ -10828,11 +10810,6 @@ header.masthead .post-heading .meta a {
   font-size: 15px;
   width: 58.33333333%;
 }
-
-
-
-
-
 .subscribe-box {
   background-color: #e9ecef;
   border-radius: 10px;
@@ -10860,19 +10837,14 @@ header.masthead .post-heading .meta a {
   margin-right: 5px; /* 오른쪽 버튼과의 간격 조정 */
   margin-left: 5px; /* 왼쪽 버튼과의 간격 조정 */
 }
-
-
-
 .post-heading {
   text-align: center;
   margin-top: 30px;
 }
-
 .post-heading h1 {
   font-size: 2.5rem;
   font-weight: 700;
 }
-
 .article-summary {
   background-color: #ffffff;
   padding: 15px;
@@ -10881,7 +10853,6 @@ header.masthead .post-heading .meta a {
   text-align: left;
   font-family: 'Roboto', sans-serif;
 }
-
 .article-summary p {
   margin: 0;
   padding: 0;
@@ -10893,23 +10864,17 @@ header.masthead .post-heading .meta a {
   height: 409px;
   margin: 20px 0 0 0;
 }
-
-
-
 body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
-
 #main-content {
   flex: 1;
 }
-
 footer {
   padding: 24px 0;
 }
-
 #backToTopBtn {
   display: none; /* 처음에는 보이지 않도록 설정 */
   position: fixed;
@@ -10926,14 +10891,9 @@ footer {
   border-radius: 50%; /* 원 모양으로 변경 */
   transition: background-color 0.3s ease;
 }
-
 #backToTopBtn:hover {
   background-color: #555; /* 호버 시 배경색 변경 */
 }
-
-
-
-
 .card-img-top {
   width: 100%;
   height: 200px; /* Fixed height for all images */
@@ -10945,7 +10905,6 @@ footer {
 .card-img-top:hover {
   filter: brightness(0.8);
 }
-
 .d-flex {
   display: flex !important;
 }
@@ -10958,25 +10917,21 @@ footer {
 .mt-auto {
   margin-top: auto !important;
 }
-
 @media (max-width: 1200px) {
   .card-img-top {
       height: 150px; /* Adjusted height for smaller screens */
   }
 }
-
 @media (max-width: 992px) {
   .card-img-top {
       height: 150px; /* Adjusted height for smaller screens */
   }
 }
-
 @media (max-width: 768px) {
   .card-img-top {
       height: 150px; /* Adjusted height for smaller screens */
   }
 }
-
 .container, .text-center {
   text-align: center;
 }

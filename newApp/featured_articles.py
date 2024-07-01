@@ -85,11 +85,6 @@ def update_crucial_articles():
         cost_won=cost_won,
     )
 
-    # News 테이블의 crucial 컬럼 업데이트
     News.objects.filter(news_id__in=selected_news_ids).update(crucial=True)
 
     return selected_news_ids, fe_total_tokens
-
-if __name__ == "__main__":
-    selected_ids, total_tokens = update_crucial_articles()
-    print(f"Selected news IDs: {selected_ids}, Total tokens used: {total_tokens}")

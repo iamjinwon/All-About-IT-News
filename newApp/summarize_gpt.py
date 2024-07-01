@@ -78,7 +78,7 @@ def summarize_articles():
                     "first_sentence": summary_lines[0].strip().lstrip('(1) '),
                     "second_sentence": summary_lines[1].strip().lstrip('(2) '),
                     "third_sentence": summary_lines[2].strip().lstrip('(3) '),
-                    "created_dt": now  # 현재 로컬 시간 저장
+                    "created_dt": now
                 }
 
                 _, created = SummarizeNews.objects.update_or_create(

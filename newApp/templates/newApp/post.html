@@ -118,10 +118,8 @@
     <script src="{% static 'newApp/js/scripts_newApp.js' %}"></script>
     <!-- Smooth Scroll JS-->
     <script>
-        // Get the button
         let mybutton = document.getElementById("backToTopBtn");
 
-        // When the user scrolls down 20px from the top of the document, show the button
         window.onscroll = function() {
             scrollFunction();
         };
@@ -134,17 +132,14 @@
             }
         }
 
-        // When the user clicks on the button, scroll to the top of the document
         mybutton.onclick = function() {
-            document.body.scrollTop = 0; // For Safari
-            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
         };
 
-        // 성공 메시지 표시
         {% if success %}
             alert("등록이 완료되었습니다.");
         {% endif %}
-        // 오류 메시지 표시
         {% if error_message %}
             alert("{{ error_message }}");
         {% endif %}
@@ -153,29 +148,25 @@
     <script>
         $(document).ready(function() {
             $('#subscriptionForm').on('submit', function(event) {
-                event.preventDefault(); // Prevent the form from submitting the default way
+                event.preventDefault();
 
                 $.ajax({
                     url: $(this).attr('action'),
                     method: $(this).attr('method'),
                     data: $(this).serialize(),
                     success: function(response) {
-                        // Handle success, show success message
                         if (response.success) {
                             alert("등록이 완료되었습니다.");
-                            $('#subscriptionForm')[0].reset(); // Reset the form
+                            $('#subscriptionForm')[0].reset();
                         } else {
-                            // Handle errors, show error message
                             displayErrors(response.error_message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        // Handle unexpected errors
                         alert("문제가 발생했습니다. 다시 시도해주세요.");
                     }
                 });
             });
-
             function displayErrors(errors) {
                 alert(errors);
             }

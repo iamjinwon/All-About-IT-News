@@ -66,12 +66,10 @@ def post(request, date_str):
                 }
                 combined_articles.append(combined_article)
 
-        # 조회수 증가 및 조회수 가져오기
         summarized_news = SummarizeNews.objects.filter(news__in=[article['news_id'] for article in original_articles])
         views_count = summarized_news.aggregate(total_views=Sum('views'))['total_views'] or 0
         summarized_news.update(views=F('views') + 1)
         
-        # 조회수를 정수형으로 변환
         views_count = int(views_count / len(combined_articles))
 
         subscriber_count = User.objects.count()

@@ -48,13 +48,13 @@ class UserSend(models.Model):
         db_table = 'user_send'
 
 class Gpt(models.Model):
-    task = models.CharField(max_length=45)  # 작업 유형을 나타내는 필드
-    input_tokens = models.IntegerField()  # 입력 토큰 수
-    output_tokens = models.IntegerField()  # 출력 토큰 수
-    total_tokens = models.IntegerField()  # 총 토큰 수
-    cost_dollar = models.FloatField()  # 비용(달러)
-    cost_won = models.FloatField()  # 비용(원)
-    created_dt = models.DateTimeField(auto_now_add=True)  # 생성 날짜와 시간
+    task = models.CharField(max_length=45)
+    input_tokens = models.IntegerField()
+    output_tokens = models.IntegerField() 
+    total_tokens = models.IntegerField()
+    cost_dollar = models.FloatField()
+    cost_won = models.FloatField() 
+    created_dt = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = True

@@ -24,9 +24,9 @@ from newApp.models import News, SummarizeNews, User
 def create_html(recipient_email):
     try:
         seoul_tz = pytz.timezone('Asia/Seoul')
-        now = datetime.now(seoul_tz).replace(tzinfo=None)  # naive datetime
-        today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)  # naive datetime
-        today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)  # naive datetime
+        now = datetime.now(seoul_tz).replace(tzinfo=None)
+        today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)
+        today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)
         date_formatted = now.strftime('%Y년 %-m월 %-d일')
         user = User.objects.get(email=recipient_email)
 
@@ -193,9 +193,9 @@ def create_html(recipient_email):
 def create_html_for_gmail(recipient_email):
     try:
         seoul_tz = pytz.timezone('Asia/Seoul')
-        now = datetime.now(seoul_tz).replace(tzinfo=None)  # naive datetime
-        today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)  # naive datetime
-        today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)  # naive datetime
+        now = datetime.now(seoul_tz).replace(tzinfo=None)
+        today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)
+        today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)
         date_formatted = now.strftime('%Y년 %-m월 %-d일')
         user = User.objects.get(email=recipient_email)
 

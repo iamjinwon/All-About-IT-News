@@ -41,7 +41,7 @@ def fetch_page(url):
             return BeautifulSoup(res.text, "lxml")
         except requests.exceptions.RequestException as e:
             attempt += 1
-            time.sleep(60)  # 1분 대기
+            time.sleep(60)
             if attempt == MAX_RETRIES:
                 raise Exception(f"Failed to fetch data after {MAX_RETRIES} attempts for URL: {url}") from e
 
@@ -91,7 +91,3 @@ def crawling():
             break
         
         page += 1
-
-# 실행 예제
-if __name__ == "__main__":
-    crawling()
