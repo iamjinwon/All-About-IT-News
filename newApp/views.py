@@ -26,6 +26,7 @@ def index(request):
                 'date': formatted_date,
                 'display_date': datetime.strptime(formatted_date, '%Y%m%d').strftime('%Y년 %m월 %d일'),
                 'image': first_article.image,
+                'title': first_article.title,
             })
 
     subscriber_count = User.objects.count()

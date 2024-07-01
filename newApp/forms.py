@@ -24,7 +24,7 @@ class UserForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if email:  # 이메일 필드가 비어있지 않을 경우만 검증
+        if email:
             try:
                 validate_email(email)
             except ValidationError:

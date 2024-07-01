@@ -76,7 +76,6 @@ def update_crucial_articles():
     fe_cost = calculate_cost("gpt-4o", fe_input_tokens, fe_output_tokens)
     cost_won = fe_cost * 1300
 
-    # GPT 테이블에 데이터 삽입
     Gpt.objects.create(
         task="기사분류",
         input_tokens=fe_input_tokens,
