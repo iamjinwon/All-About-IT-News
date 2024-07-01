@@ -8,7 +8,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     "localhost",
-    "3.36.125.77"
+    "3.36.125.77",
+    "allabout-it.p-e.kr",
 ]
 
 INSTALLED_APPS = [
