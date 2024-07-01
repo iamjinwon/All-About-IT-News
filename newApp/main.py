@@ -51,7 +51,7 @@ def main(crawl=True, update=True, summarize=True, send_email=True, send_email_on
 
 def schedule_jobs():
     scheduler = BlockingScheduler(timezone="Asia/Seoul")
-    scheduler.add_job(main, 'cron', hour=5, minute=0, args=[True, True, True, False])
+    scheduler.add_job(main, 'cron', hour=16, minute=36, args=[True, True, True, False])
     scheduler.add_job(main, 'cron', hour=6, minute=0, args=[False, False, False, True, True])
     logging.info("스케줄러가 설정되었습니다. 매일 오전 5시에 작업을 시작하고, 6시에 이메일을 전송합니다.")
     scheduler.start()
