@@ -28,6 +28,7 @@ def create_html(recipient_email):
         today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)
         today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)
         date_formatted = now.strftime('%Y년 %-m월 %-d일')
+        url_date = now.strftime('%Y%m%d')
         user = User.objects.get(email=recipient_email)
 
         original_articles = News.objects.filter(created_dt__range=(today_start, today_end), crucial=True)[:5]
@@ -68,7 +69,7 @@ def create_html(recipient_email):
                 }
                 combined_articles.append(combined_article)
 
-        unsubscribe_url = f"http://127.0.0.1:8000/IT_news/unsubscribe/?token={user.unsubscribe_token}"
+        unsubscribe_url = f"https://allabout-it.p-e.kr/itnews/unsubscribe/?token={user.unsubscribe_token}"
 
         combined_html = f"""
         <!DOCTYPE html>
@@ -142,13 +143,13 @@ def create_html(recipient_email):
             <a>
                 <img src="https://i.ibb.co/BtYZ3yx/DALL-E-2024-06-27-22-48-57-Create-a-wide-logo-for-a-website-named-ALL-ABOUT-IT-NEWS-The-logo-should.webp" alt="DALL-E-2024-06-27-22-48-57-Create-a-wide-logo-for-a-website-named-ALL-ABOUT-IT-NEWS-The-logo-should" width="728" style="display: block; margin: 0 auto; margin-bottom: 5px; border-radius: 10px;">
             </a>
-            <a href="http://127.0.0.1:8000/IT_news/" style="text-decoration: none; font-size: 14px; color: gray; font-family: 'Roboto', sans-serif;">[웹에서 보러가기]</a>
+            <a href="https://allabout-it.p-e.kr/itnews/news/{url_date}/" style="text-decoration: none; font-size: 14px; color: gray; font-family: 'Roboto', sans-serif;">[웹에서 보러가기]</a>
             <p style="font-size: 30px; font-weight: bold; margin-top: 70px; margin-bottom: 5px;">
                 🔥 매일 아침 6시에 최신 
                 <span style="color: red;">IT 뉴스</span> 5가지를 무료로 받아보세요 🔥
             </p>
             <p style="font-size: 14px; color: gray; margin-top: 5px; margin-bottom: 10px;">
-                {date_formatted} | 조회 수 : <span id="views-count">{views_count}</span>
+                {date_formatted}</span>
             </p>
         </div>
         <h3 style="text-align: center; margin-top: 60px;">오늘의 뉴스 한줄요약 </h3>
@@ -184,7 +185,7 @@ def create_html(recipient_email):
         </div>
         </body></html>
         """ 
-        return transform(combined_html)
+        return transform(combined_html), combined_articles[0]['title']
 
     except Exception as e:
         print(f"오류가 발생했습니다: {str(e)}")
@@ -197,6 +198,7 @@ def create_html_for_gmail(recipient_email):
         today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)
         today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)
         date_formatted = now.strftime('%Y년 %-m월 %-d일')
+        url_date = now.strftime('%Y%m%d')
         user = User.objects.get(email=recipient_email)
 
         original_articles = News.objects.filter(created_dt__range=(today_start, today_end), crucial=True)[:5]
@@ -237,7 +239,7 @@ def create_html_for_gmail(recipient_email):
                 }
                 combined_articles.append(combined_article)
 
-        unsubscribe_url = f"http://127.0.0.1:8000/IT_news/unsubscribe/?token={user.unsubscribe_token}"
+        unsubscribe_url = f"https://allabout-it.p-e.kr/itnews/unsubscribe/?token={user.unsubscribe_token}"
 
         combined_html = f"""
         <!DOCTYPE html>
@@ -311,13 +313,13 @@ def create_html_for_gmail(recipient_email):
             <a>
                 <img src="https://i.ibb.co/BtYZ3yx/DALL-E-2024-06-27-22-48-57-Create-a-wide-logo-for-a-website-named-ALL-ABOUT-IT-NEWS-The-logo-should.webp" alt="DALL-E-2024-06-27-22-48-57-Create-a-wide-logo-for-a-website-named-ALL-ABOUT-IT-NEWS-The-logo-should" width="728" style="display: block; margin: 0 auto; margin-bottom: 5px; border-radius: 10px;">
             </a>
-            <a href="http://127.0.0.1:8000/IT_news/" style="text-decoration: none; font-size: 14px; color: gray; font-family: 'Roboto', sans-serif;">[웹에서 보러가기]</a>
+            <a href="https://allabout-it.p-e.kr/itnews/news/{url_date}/" style="text-decoration: none; font-size: 14px; color: gray; font-family: 'Roboto', sans-serif;">[웹에서 보러가기]</a>
             <p style="font-size: 30px; font-weight: bold; margin-top: 70px; margin-bottom: 5px;">
                 🔥 매일 아침 6시에 최신 
                 <span style="color: red;">IT 뉴스</span> 5가지를 무료로 받아보세요 🔥
             </p>
             <p style="font-size: 14px; color: gray; margin-top: 5px; margin-bottom: 10px;">
-                {date_formatted} | 조회 수 : <span id="views-count">{views_count}</span>
+                {date_formatted}</span>
             </p>
         </div>
         <h3 style="text-align: center; margin-top: 60px;">오늘의 뉴스 한줄요약 </h3>
@@ -353,7 +355,7 @@ def create_html_for_gmail(recipient_email):
         </div>
         </body></html>
         """ 
-        return transform(combined_html)
+        return transform(combined_html), combined_articles[0]['title']
 
     except Exception as e:
         print(f"오류가 발생했습니다: {str(e)}")
@@ -366,19 +368,20 @@ def send_email_with_attachment():
     smtp_password = settings.EMAIL_HOST_PASSWORD
 
     from_email = smtp_user
-    subject = '오늘의 IT 뉴스입니다.'
 
     recipients = User.objects.values_list('email', flat=True)
 
     for recipient in recipients:
         if '@gmail.com' in recipient:
-            html_content = create_html_for_gmail(recipient)
+            html_content, title = create_html_for_gmail(recipient)
         else:
-            html_content = create_html(recipient)
+            html_content, title = create_html(recipient)
 
         if not html_content:
             print("No HTML content to send.")
             continue
+
+        subject = f'{title} | 오늘의 IT 뉴스 5가지'
 
         msg = MIMEMultipart('alternative')
         msg['From'] = from_email

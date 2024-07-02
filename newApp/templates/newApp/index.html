@@ -52,7 +52,15 @@
                         <div class="text-center">
                             <!-- Product name-->
                             <h5 class="fw-bolder">{{ article.display_date }}</h5>
-                            <div><b>{{ article.title }}...</b></div>
+                            <div>
+                                <b>
+                                    {% if article.title|length > 15 %}
+                                        {{ article.title|slice:":15" }}...
+                                    {% else %}
+                                        {{ article.title }}
+                                    {% endif %}
+                                </b>
+                            </div>
                         </div>
                     </div>
                     <!-- Product actions-->
