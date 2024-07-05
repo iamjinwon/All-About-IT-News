@@ -38,7 +38,7 @@
         document.getElementById('unsubscribe-button').onclick = function() {
             var userEmail = "{{ user.email }}";
             var userName = "{{ user.user_name }}";
-            fetch('/IT_news/unsubscribe/process_unsubscribe/', {
+            fetch('/itnews/unsubscribe/process_unsubscribe/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
