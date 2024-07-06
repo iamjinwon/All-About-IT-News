@@ -61,8 +61,7 @@
                         </div>
 
                         <h3 style="text-align: center; margin-top: 60px;">오늘의 뉴스 한줄요약 </h3>
-                        <div class="summary-box mx-auto" style="
-                        background-color: #e9ecef;
+                        <div class="summary-box mx-auto" style="background-color: #e9ecef;
                         border-radius: 10px;
                         margin: 20px 0;
                         padding: 0px 15px 0px 15px;
@@ -86,22 +85,9 @@
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                                 text-align: left;
                                 font-family: 'Roboto', sans-serif;">
-                                    <p style="
-                                    margin: 0;
-                                    padding: 0;
-                                    font-size: 1rem;
-                                    color: #212529;">✅ {{ article.summary.first_sentence }}</p>
-                                    <p style="
-                                    margin-top: 20px;   margin: 0;
-                                    padding: 0;
-                                    font-size: 1rem;
-                                    color: #212529;">✅ {{ article.summary.second_sentence }}</p>
-                                    <p style="
-                                    margin-top: 20px;      
-                                    margin: 0;
-                                    padding: 0;
-                                    font-size: 1rem;
-                                    color: #212529;">✅ {{ article.summary.third_sentence }}</p>
+                                    <p>✅ {{ article.summary.first_sentence }}</p>
+                                    <p style="margin-top: 20px;">✅ {{ article.summary.second_sentence }}</p>
+                                    <p style="margin-top: 20px;">✅ {{ article.summary.third_sentence }}</p>
                                 </div>
                             </div>
                         {% endfor %}
