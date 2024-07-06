@@ -10940,15 +10940,25 @@ footer {
   margin-right: auto;
 }
 @media (max-width: 768px) {
-  .summary-box p {
-      font-size: 14px; 
-      line-height: 1.6;
-      margin: 5px 0;
-      padding: 0 15px; 
-  }
   .summary-box {
-      width: 100%;
-      margin: 10px auto;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    margin: 20px 0;
+    padding: 0px 15px 0px 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+  }
+}
+@media (max-width: 768px) {
+  .article-summary {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    font-family: 'Roboto', sans-serif;
   }
 }
 }
