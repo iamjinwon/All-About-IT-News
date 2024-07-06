@@ -54,8 +54,8 @@
                             <h5 class="fw-bolder">{{ article.display_date }}</h5>
                             <div>
                                 <b>
-                                    {% if article.title|length > 25 %}
-                                        {{ article.title|slice:":25" }}...
+                                    {% if article.title|length > 40 %}
+                                        {{ article.title|slice:":40" }}...
                                     {% else %}
                                         {{ article.title }}
                                     {% endif %}
