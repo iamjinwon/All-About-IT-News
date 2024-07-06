@@ -76,7 +76,7 @@
                         {% for article in articles %}
                             <div class="col-md-10 col-lg-8 col-xl-7 mx-auto" id="article-{{ forloop.counter }}">
                                 <h2 class="section-heading" style="text-align: center; margin-top: 70px;">{{ article.title }}</h2>
-                                <a><img class="post-image" src="{{ article.image }}" alt="..." /></a>
+                                <a><img class="img-fluid post-image" src="{{ article.image }}" alt="..." /></a>
                                 <div class="article-link"><p>출처: <b><a href="{{ article.link }}" style="text-decoration: none; color: gray;">{{ article.info }}</a></b></p></div>
                                 <div class="article-summary" style="  
                                 background-color: #ffffff;
