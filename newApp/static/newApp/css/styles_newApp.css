@@ -10939,4 +10939,10 @@ footer {
   margin-left: auto;
   margin-right: auto;
 }
+@media (max-width: 768px) {
+  .summary-box {
+    font-size: 4vw;
+    padding: 5%; 
+  }
+}
 }
