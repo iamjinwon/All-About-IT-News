@@ -131,7 +131,7 @@ def summarize_articles():
         total_tokens = res_body['usage']['total_tokens']
 
         cost = calculate_cost("gpt-4o", input_tokens, output_tokens) / 2
-        cost_won = (cost * 1300) / 2
+        cost_won = (cost * 1300)
 
         if res_content:
             summary_lines = res_content.strip().split('\n')

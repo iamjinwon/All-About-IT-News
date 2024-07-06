@@ -124,7 +124,7 @@ def update_crucial_articles():
 
     # 비용 계산
     fe_cost = (calculate_cost("gpt-4o", fe_input_tokens, fe_output_tokens)) / 2
-    cost_won = (fe_cost * 1300) / 2
+    cost_won = (fe_cost * 1300)
 
     Gpt.objects.create(
         task="기사분류",
