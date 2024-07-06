@@ -10940,9 +10940,15 @@ footer {
   margin-right: auto;
 }
 @media (max-width: 768px) {
+  .summary-box p {
+      font-size: 14px; 
+      line-height: 1.6;
+      margin: 5px 0;
+      padding: 0 15px; 
+  }
   .summary-box {
-    font-size: 4vw;
-    padding: 5%; 
+      width: 100%;
+      margin: 10px auto;
   }
 }
 }
