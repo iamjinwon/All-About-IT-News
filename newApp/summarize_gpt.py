@@ -13,7 +13,6 @@ current_path = os.path.dirname(os.path.abspath(__file__))
 project_path = os.path.join(current_path, '..')
 sys.path.append(project_path)
 os.chdir(project_path)
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newProject.settings')
 django.setup()
 
@@ -77,18 +76,16 @@ def make_output():
         batch_job = client.batches.retrieve(batch_job.id)
         if batch_job.status == "completed":
             break
-        time_module.sleep(600)  # 10분 대기
+        time_module.sleep(600)
 
     result_file_id = batch_job.output_file_id
     result = client.files.content(result_file_id).content
-    print(result)
 
     result_file_name = os.path.join(current_path, 'test_result.jsonl')
 
     with open(result_file_name, 'wb') as file:
         file.write(result)
 
-    # 저장된 파일에서 데이터 로드
     results = []
     with open(result_file_name, 'r') as file:
         for line in file:
@@ -109,10 +106,8 @@ def calculate_cost(model, input_tokens, output_tokens):
 def summarize_articles():
     seoul_tz = pytz.timezone('Asia/Seoul')
     now = datetime.now(seoul_tz).replace(tzinfo=None)
-    today_start = datetime.combine(now.date(), time.min).replace(tzinfo=None)
-    today_end = datetime.combine(now.date(), time.max).replace(tzinfo=None)
 
-    news_data, news_count = fetch_crucial_news()
+    news_data, _ = fetch_crucial_news()
 
     if not news_data:
         print("No news articles found for today's date.")
@@ -121,7 +116,6 @@ def summarize_articles():
     results = make_output()
 
     for i, news in enumerate(news_data):
-        description = news.description
         news_id = news.news_id
         res = results[i]
         res_body = res['response']['body']
@@ -163,6 +157,16 @@ def summarize_articles():
                 )
             else:
                 print(f"Summarization did not return enough sentences for news_id {news_id}")
+
+    result_file_name = os.path.join(current_path, 'test_result.jsonl')
+    if os.path.exists(result_file_name):
+        os.remove(result_file_name)
+        print(f"{result_file_name} has been deleted.")
+
+    batch_input_file_name = os.path.join(current_path, 'batchinput.jsonl')
+    if os.path.exists(batch_input_file_name):
+        os.remove(batch_input_file_name)
+        print(f"{batch_input_file_name} has been deleted.")    
 
 if __name__ == "__main__":
     summarize_articles()

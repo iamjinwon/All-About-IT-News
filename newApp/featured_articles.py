@@ -78,21 +78,18 @@ def make_output():
     
     result_file_id = batch_job.output_file_id
     result = client.files.content(result_file_id).content
-    print(result)
 
     result_file_name = "./test_result.jsonl"
 
     with open(result_file_name, 'wb') as file:
         file.write(result)
-    # Loading data from saved file
+
     results = []
     with open(result_file_name, 'r') as file:
         for line in file:
-            # Parsing the JSON string into a dict and appending to the list of results
             json_object = json.loads(line.strip())
             results.append(json_object)
 
-    # Reading only the first results
     res = results[0]
     res_body = res['response']['body']
     res_content = res_body['choices'][0]['message']['content']
@@ -122,7 +119,6 @@ def update_crucial_articles():
         print(f"Response content was not in the expected format: {selected_news_ids_str}")
         return [], fe_total_tokens
 
-    # 비용 계산
     fe_cost = (calculate_cost("gpt-4o", fe_input_tokens, fe_output_tokens)) / 2
     cost_won = (fe_cost * 1300)
 
@@ -136,6 +132,11 @@ def update_crucial_articles():
     )
 
     News.objects.filter(news_id__in=selected_news_ids).update(crucial=True)
+
+    result_file_name = "./test_result.jsonl"
+    if os.path.exists(result_file_name):
+        os.remove(result_file_name)
+        print(f"{result_file_name} has been deleted.")
 
     return selected_news_ids, fe_total_tokens
 

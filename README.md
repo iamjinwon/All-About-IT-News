@@ -108,14 +108,8 @@ python manage.py migrate
 # Demo Videos
 - Website demo video.
 
-<video width="640" height="480" controls>
-  <source src="https://github.com/yourusername/yourrepository/raw/main/path/to/video.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/Ln7eNZMW1_o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 - Mobile screen demo video.
 
-<video width="640" height="480" controls>
-  <source src="https://github.com/yourusername/yourrepository/raw/main/path/to/video.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/e-iwb_qZJoU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
