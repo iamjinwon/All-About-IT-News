@@ -25,10 +25,13 @@ English | [한국어](README_kor.md)
 
 Table of Contents
 =================
-- [All About IT news : Automated IT News Website](#all-about-it-news)
+- [All About IT news : Automated IT News Website](#All-About-IT-news-:-Automated-IT-News-Website)
 - [Table of Contents](#Table-of-Contents)
   - [Installation Instructions](#Installation-Instructions)
   - [Initialization Process](#Initialization-Process)
+  - [Libraries Used](#Libraries-Used)
+  - [Technology Stack](#Technology-Stack)
+- [Demo Videos](#Demo-Videos)
 
 
 ### Development Environment
@@ -55,8 +58,8 @@ initialize_2024_all_about_it_news
 python manage.py runserver
 ```
 
-### Configuration File Setup
-**initialize_2024_all_about_it_news** command performs the following tasks :
+### Initialization Process
+**"initialize_2024_all_about_it_news"** command performs the following tasks :
 - Install MySQL server and client
 - Install necessary system packages
 - Create the '.env' file
@@ -91,15 +94,28 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-----
-
-## Libraries Used
+### Libraries Used
 - beautifulsoup4: Utilized for web scraping processes.
 - openai: Employed for leveraging the ChatGPT API.
 - [premailer](https://github.com/peterbe/premailer) : Used for converting email styles to inline styles.
 
-
-## Technology Stack
+### Technology Stack
 | Python | Django | HTML | MySQL | gunicorn | nginx | 
 | :--------: | :--------: | :------: | :------: | :------: | :------: |
 | <img src="images/python.png" width="100" height="100"> | <img src="images/django.png" width="100" height="100"> | <img src="images/html.png" width="100" height="100"> | <img src="images/mysql.png" width="100" height="100"> | <img src="images/gunicorn.png" width="100" height="100"> | <img src="images/nginx.png" width="100" height="100"> |
+----
+
+# Demo Videos
+- Website demo video.
+
+<video width="640" height="480" controls>
+  <source src="https://github.com/yourusername/yourrepository/raw/main/path/to/video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+- Mobile screen demo video.
+
+<video width="640" height="480" controls>
+  <source src="https://github.com/yourusername/yourrepository/raw/main/path/to/video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>

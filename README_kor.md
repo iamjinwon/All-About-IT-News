@@ -25,11 +25,13 @@
 
 목차
 =================
-- [All About IT news : 자동화 IT 뉴스 웹사이트](#all-about-it-news)
+- [All About IT news : 자동화 IT 뉴스 웹사이트](#All-About-IT-news-:-자동화-IT-뉴스-웹사이트)
 - [목차](#목차)
   - [설치방법](#설치방법)
   - [초기화과정](#초기화과정)
-
+  - [사용된 라이브러리](#사용된-라이브러리)
+  - [기술 스택](#기술-스택)
+- [시연 동영상](#시연-동영상)
 
 ### 개발환경
 - Python 3.10 이상
@@ -55,8 +57,8 @@ initialize_2024_all_about_it_news
 python manage.py runserver
 ```
 
-### 설정 파일 구성
-**initialize_2024_all_about_it_news** 명령어는 다음과 같은 작업들을 수행합니다 :
+### 초기화과정
+**"initialize_2024_all_about_it_news"** 명령어는 다음과 같은 작업들을 수행합니다 :
 - MySQL 서버 및 클라이언트 설치
 - 필요한 시스템 패키지 설치
 - '.env'파일 생성
@@ -91,16 +93,30 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-----
-
-## 사용된 라이브러리
+### 사용된 라이브러리
 - beautifulsoup4 : 크롤링과정에서 사용.
 - openai : chatGpt API 이용.
 - [premailer](https://github.com/peterbe/premailer) : 이메일의 style을 inline-style로 바꾸는데 사용.
 
-
-## 기술 스택
+### 기술 스택
 
 | Python | Django | HTML | MySQL | gunicorn | nginx | 
 | :--------: | :--------: | :------: | :------: | :------: | :------: |
 | <img src="images/python.png" width="100" height="100"> | <img src="images/django.png" width="100" height="100"> | <img src="images/html.png" width="100" height="100"> | <img src="images/mysql.png" width="100" height="100"> | <img src="images/gunicorn.png" width="100" height="100"> | <img src="images/nginx.png" width="100" height="100"> |
+
+----
+
+# 시연 동영상
+- 웹사이트 시연 동영상입니다.
+
+<video width="640" height="480" controls>
+  <source src="https://github.com/yourusername/yourrepository/raw/main/path/to/video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+- 모바일화면 시연 동영상입니다.
+
+<video width="640" height="480" controls>
+  <source src="https://github.com/yourusername/yourrepository/raw/main/path/to/video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>

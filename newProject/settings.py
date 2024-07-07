@@ -1,6 +1,10 @@
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 import newProject.my_settings as my_settings
 import newProject.my_email as my_email
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -8,7 +12,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     "localhost",
-    "3.36.125.77",
+    os.getenv('PUBLIC_IP'),
     "allabout-it.p-e.kr",
 ]
 
