@@ -106,10 +106,5 @@ python manage.py migrate
 ----
 
 # Demo Videos
-- Website demo video.
-
-<iframe width="640" height="480" src="https://www.youtube.com/embed/Ln7eNZMW1_o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-- Mobile screen demo video.
-
-<iframe width="640" height="480" src="https://www.youtube.com/embed/e-iwb_qZJoU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+- Website demo video : https://www.youtube.com/watch?v=Ln7eNZMW1_o
+- Mobile screen demo video :https://www.youtube.com/shorts/e-iwb_qZJoU
